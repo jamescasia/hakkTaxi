@@ -18,17 +18,25 @@ class _BookFrameState extends State<BookFrame> {
             bottomLeft: Radius.circular(Globals.cornerRadius),
             topRight: Radius.circular(Globals.cornerRadius),
             bottomRight: Radius.circular(Globals.cornerRadius)),
-        child: AnimatedContainer(
-          curve: Curves.fastLinearToSlowEaseIn,
-          duration: Duration(milliseconds: 300),
-          color: Globals.offWhite,
+        child: Container(
+          color: Globals.offWhite.withAlpha(0),
           width: Globals.width,
           padding: EdgeInsets.all(Globals.dwidth * 2),
           height: frontPanelSize(appModel.curScreen),
-          child: Column(children: [
-            Text(appModel.curScreen.toString())
-            // variable
-          ]),
+          child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Center(
+                    child:
+                        Container(color: Colors.green, width: 40, height: 40)),
+                Center(
+                    child:
+                        Container(color: Colors.yellow, width: 40, height: 40)),
+
+                // Text(appModel.curScreen.toString())
+                // variable
+              ]),
         ),
       );
     });

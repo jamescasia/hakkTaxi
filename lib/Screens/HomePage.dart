@@ -6,6 +6,7 @@ import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:grabApp/DataModels/Screens.dart';
+
 class GrabApp extends StatefulWidget {
   @override
   _GrabAppState createState() => _GrabAppState();
@@ -33,24 +34,7 @@ class _GrabAppState extends State<GrabApp> {
           width: Globals.width,
           height: Globals.height,
           color: Colors.white,
-          child: Stack(
-            children: [
-              Positioned(bottom: 0, child: BottomPanel()),
-              (appModel.curScreen == Screen.BookScreen)
-                  ? Positioned(
-                      bottom: Globals.height * 0.3,
-                      child: Container(
-                        width: Globals.width,
-                        child: Center(
-                          child: Container(
-                              color: Colors.red,
-                              width: Globals.width * 0.5,
-                              height: Globals.dheight * 80),
-                        ),
-                      ))
-                  : SizedBox(width: 0)
-            ],
-          ),
+          child: BottomPanel(),
         )));
       }),
     );
