@@ -4,8 +4,9 @@ import 'package:grabApp/DataModels/Globals.dart';
 import 'elements/BottomPanel.dart';
 import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:scoped_model/scoped_model.dart';
-
+import 'package:flutter_map/flutter_map.dart';
 import 'package:grabApp/DataModels/Screens.dart';
+import 'package:grabApp/DataModels/AuthKeys.dart';
 
 class GrabApp extends StatefulWidget {
   @override
@@ -39,7 +40,6 @@ class _GrabAppState extends State<GrabApp> {
                     body: Container(
               width: Globals.width,
               height: Globals.height,
-              color: Colors.white,
               child: BottomPanel(),
             ))),
           ),

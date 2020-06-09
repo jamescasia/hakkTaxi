@@ -9,6 +9,11 @@ import 'package:grabApp/Screens/Frames/BookFrame.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dotted_border/dotted_border.dart';
 
+import 'package:latlong/latlong.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:grabApp/DataModels/Screens.dart';
+import 'package:grabApp/DataModels/AuthKeys.dart';
+
 import 'package:grabApp/DataModels/Screens.dart';
 
 class BottomPanel extends StatefulWidget {
@@ -51,6 +56,42 @@ class _BottomPanelState extends State<BottomPanel>
       return Container(
         child: Stack(
           children: <Widget>[
+            Container(
+              height: Globals.height * 0.7,
+              child: FlutterMap(
+                options: new MapOptions(
+                  center: new LatLng(37.530039, 126.920451),
+                  zoom: 13.0,
+                ),
+                layers: [
+                  new TileLayerOptions(
+                    urlTemplate:
+                        "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
+                    backgroundColor: Colors.red,    
+                    additionalOptions: {
+                      'subscriptionKey': AuthKeys.mapsAuthKey,
+                      // 'z': '12',
+                      // 'x': '12',
+                    },
+                  ),
+                  new MarkerLayerOptions(
+                    markers: [
+                      new Marker(
+                        point: new LatLng(37.530039, 126.920451),
+                        builder: (ctx) => new Container(
+                          child: FaIcon(
+                            FontAwesomeIcons.mapMarker,
+                            color: Globals.pickerBlue,
+                            size: Globals.dwidth * 40,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
             /**Backest Panel */
             Positioned(
                 bottom: 0,
