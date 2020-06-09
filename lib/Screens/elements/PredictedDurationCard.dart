@@ -29,21 +29,18 @@ predictedDurationCard(String duration, UniqueKey key) {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12))),
         child: Container(
-          // width: Globals.dwidth * 160,
+          width: Globals.dwidth * 174,
           height: Globals.dheight * 50,
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(12))),
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(duration,
-                  style: TextStyle(
-                      fontFamily: "Lato",
-                      fontSize: 34,
-                      fontWeight: FontWeight.w800,
-                      color: Globals.h1text)),
-            ),
+            child: Text(duration,
+                style: TextStyle(
+                    fontFamily: "Lato",
+                    fontSize: 34,
+                    fontWeight: FontWeight.w800,
+                    color: Globals.h1text)),
           ),
         ),
       )

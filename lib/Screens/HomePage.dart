@@ -28,20 +28,31 @@ class _GrabAppState extends State<GrabApp> {
       model: AppModel(),
       child:
           ScopedModelDescendant<AppModel>(builder: (context, child, appModel) {
-        return WillPopScope(
-          onWillPop: () {
-            appModel.setScreen(Screen.BookScreen);
-          },
-          child: Material(
-              child: Scaffold(
-                  body: Container(
-            width: Globals.width,
-            height: Globals.height,
-            color: Colors.white,
-            child: BottomPanel(),
-          ))),
+        return ScrollConfiguration(
+          behavior: ScrollBehaviour(),
+          child: WillPopScope(
+            onWillPop: () {
+              appModel.setScreen(Screen.BookScreen);
+            },
+            child: Material(
+                child: Scaffold(
+                    body: Container(
+              width: Globals.width,
+              height: Globals.height,
+              color: Colors.white,
+              child: BottomPanel(),
+            ))),
+          ),
         );
       }),
     );
+  }
+}
+
+class ScrollBehaviour extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

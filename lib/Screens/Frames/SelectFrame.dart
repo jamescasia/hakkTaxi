@@ -10,15 +10,18 @@ import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/Screens/elements/PathWidget.dart';
 
 selectFrame(AppModel appModel) {
+  int i = 0;
   return Container(
     // color: Colors.grey[50],
     child: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: appModel.appData.dataPoints
-            .map((dp) => DataPointCard(dp, appModel))
-            .toList(),
+        children: appModel.appData.dataPoints.map((dp) {
+          dp.setOrder(i);
+          i += 1;
+          return DataPointCard(dp, appModel);
+        }).toList(),
       ),
     ),
   );
@@ -51,7 +54,11 @@ class _DataPointCardState extends State<DataPointCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: Globals.dheight * 14),
+      margin: EdgeInsets.only(
+          top: Globals.dheight * 14,
+          bottom: dataPoint.order == appModel.appData.dataPoints.length - 1
+              ? Globals.dheight * 14
+              : 0),
       child: Material(
         elevation: 3,
         shadowColor: Colors.black26,
