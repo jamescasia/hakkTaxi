@@ -175,8 +175,8 @@ bookFrame(AppModel appModel, UniqueKey key) {
                   child: Text(
                     appModel.bookState == BookState.NotBooked
                         ? "BOOK"
-                        : appModel.bookState == BookState.Booking
-                            ? "BOOKING"
+                        : appModel.bookState == BookState.Driving
+                            ? "DRIVING"
                             : "ARRIVED",
                     textAlign: TextAlign.start,
                     style: TextStyle(
@@ -186,7 +186,7 @@ bookFrame(AppModel appModel, UniqueKey key) {
                         color: Colors.white),
                   ),
                 ),
-                appModel.bookState == BookState.Booking
+                appModel.bookState == BookState.Driving
                     ? Positioned.fill(
                         right: 0,
                         child: Align(

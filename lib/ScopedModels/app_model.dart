@@ -29,7 +29,7 @@ class AppModel extends Model {
   }
 
   void manualBook() async {
-    bookState = BookState.Booking;
+    bookState = BookState.Driving;
     notifyListeners();
 
     await Future.delayed(Duration(seconds: 2));
@@ -46,7 +46,7 @@ class AppModel extends Model {
 
   void selectBook(DataPoint dataPoint) async {
     setScreen(Screen.BookScreen);
-    bookState = BookState.Booking;
+    bookState = BookState.Driving;
     notifyListeners();
 
     await Future.delayed(Duration(seconds: 2));
@@ -70,4 +70,4 @@ class WidgetState {
   FocusNode dF = FocusNode();
 }
 
-enum BookState { NotBooked, Booking, Arrived }
+enum BookState { NotBooked, Driving, Arrived }

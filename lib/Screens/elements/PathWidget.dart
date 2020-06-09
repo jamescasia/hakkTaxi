@@ -57,7 +57,8 @@ pathWidget() {
                     color: Globals.dashBlue,
                     width: 4,
                     height: 5,
-                  ),SizedBox(
+                  ),
+                  SizedBox(
                     width: 10,
                     height: 4,
                   ),
@@ -114,6 +115,20 @@ pathWidget() {
           height: Globals.dwidth * 20,
           child: Stack(
             children: <Widget>[
+              Positioned.fill(
+                bottom: 0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: RotationTransition(
+                    turns: AlwaysStoppedAnimation(45 / 360),
+                    child: Container(
+                      width: Globals.dwidth * 14,
+                      height: Globals.dwidth * 14,
+                      color: Globals.accentBlue,
+                    ),
+                  ),
+                ),
+              ),
               Container(
                   width: Globals.dwidth * 20,
                   height: Globals.dwidth * 20,
