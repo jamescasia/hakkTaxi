@@ -28,14 +28,19 @@ class _GrabAppState extends State<GrabApp> {
       model: AppModel(),
       child:
           ScopedModelDescendant<AppModel>(builder: (context, child, appModel) {
-        return Material(
-            child: Scaffold(
-                body: Container(
-          width: Globals.width,
-          height: Globals.height,
-          color: Colors.white,
-          child: BottomPanel(),
-        )));
+        return WillPopScope(
+          onWillPop: () {
+            appModel.setScreen(Screen.BookScreen);
+          },
+          child: Material(
+              child: Scaffold(
+                  body: Container(
+            width: Globals.width,
+            height: Globals.height,
+            color: Colors.white,
+            child: BottomPanel(),
+          ))),
+        );
       }),
     );
   }

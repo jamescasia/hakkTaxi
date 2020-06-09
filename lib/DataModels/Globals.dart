@@ -9,7 +9,7 @@ class Globals {
   static double maxHeight;
   static double maxWidth;
 
-  static double cornerRadius = 50;
+  static double cornerRadius = 44;
   static Color bgBlue = Color(0xff1566BF);
   static Color accentBlue = Color(0xff1A88EF);
   static Color btnBlue = Color(0xff0D7EEE);

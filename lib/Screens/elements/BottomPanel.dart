@@ -6,6 +6,8 @@ import 'package:grabApp/Screens/Frames/SummaryFrame.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:grabApp/Screens/Frames/BookFrame.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:dotted_border/dotted_border.dart';
 
 import 'package:grabApp/DataModels/Screens.dart';
 
@@ -15,8 +17,34 @@ class BottomPanel extends StatefulWidget {
   _BottomPanelState createState() => _BottomPanelState();
 }
 
-class _BottomPanelState extends State<BottomPanel> {
+class _BottomPanelState extends State<BottomPanel>
+    with SingleTickerProviderStateMixin {
   _BottomPanelState();
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 50),
+      vsync: this,
+    );
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(1.5, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticIn,
+    ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, appModel) {
@@ -28,10 +56,10 @@ class _BottomPanelState extends State<BottomPanel> {
                 bottom: 0,
                 child: AnimatedContainer(
                   curve: Curves.fastLinearToSlowEaseIn,
-                  duration: Duration(milliseconds: 300),
+                  duration: Duration(milliseconds: 500),
                   height:
                       backPanelSize(appModel.curScreen) + 50 * Globals.dheight,
-                  color: Colors.red,
+                  color: Colors.red.withAlpha(0),
                   width: Globals.width,
                 )),
             /**Back Panel */
@@ -44,18 +72,18 @@ class _BottomPanelState extends State<BottomPanel> {
                 ),
                 child: InkWell(
                   onTap: () {
-                    appModel.nextScreen();
+                    // appModel.nextScreen();
                   },
                   child: AnimatedContainer(
                     curve: Curves.fastLinearToSlowEaseIn,
-                    duration: Duration(milliseconds: 300),
+                    duration: Duration(milliseconds: 500),
                     width: Globals.width,
                     height: backPanelSize(appModel.curScreen),
                     color: Globals.bgBlue,
                     child: Stack(children: [
                       /**Title Bar */
                       Positioned(
-                          top: 24 * Globals.dheight,
+                          top: 20 * Globals.dheight,
                           left: 28 * Globals.dwidth,
                           child: titleWidget(appModel.curScreen)
 
@@ -81,16 +109,22 @@ class _BottomPanelState extends State<BottomPanel> {
                                 width: Globals.dwidth * 44,
                                 height: Globals.dwidth * 44,
                                 decoration: BoxDecoration(
-                                    color: Colors.grey,
+                                    color: Colors.blue.withAlpha(160),
                                     borderRadius: BorderRadius.circular(300)),
                                 child: InkWell(
                                   onTap: () {
                                     print("yawaw");
+                                    appModel.setScreen(Screen.SelectScreen);
                                   },
                                   highlightColor: Colors.red,
                                   splashColor: Colors.blue,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(300)),
+                                  child: Center(
+                                    child: FaIcon(FontAwesomeIcons.hamburger,
+                                        size: Globals.dwidth * 22,
+                                        color: Colors.white),
+                                  ),
                                 ),
                               ))
                           : SizedBox(),
@@ -105,34 +139,59 @@ class _BottomPanelState extends State<BottomPanel> {
                                   Radius.circular(Globals.cornerRadius)),
                           /**Front Panel */
                           child: AnimatedContainer(
-                            curve: Curves.fastLinearToSlowEaseIn,
-                            duration: Duration(milliseconds: 300),
-                            color: Globals.offWhite,
-                            width: Globals.width,
-                            padding: EdgeInsets.all(Globals.dwidth * 2),
-                            height: frontPanelSize(appModel.curScreen),
-                            child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Center(
-                                      child: Container(
-                                          color: Colors.green,
-                                          width: 40,
-                                          height: 40)),
-                                  Center(
-                                      child: Container(
-                                          color: Colors.yellow,
-                                          width: 40,
-                                          height: 40)),
+                              curve: Curves.fastLinearToSlowEaseIn,
+                              duration: Duration(milliseconds: 500),
+                              color: Colors.grey[300],
+                              width: Globals.width,
+                              padding: EdgeInsets.all(Globals.dwidth * 2),
+                              height: frontPanelSize(appModel.curScreen),
+                              child: body(appModel, UniqueKey())
 
-                                  // Text(appModel.curScreen.toString())
-                                  // variable
-                                ]),
-                          ),
+                              // Column(
+                              //     mainAxisSize: MainAxisSize.max,
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceAround,
+                              //     children: [
+                              //       Center(
+                              //           child: Container(
+                              //               color: Colors.green,
+                              //               width: 40,
+                              //               height: 40)),
+                              //       Center(
+                              //           child: Container(
+                              //               color: Colors.yellow,
+                              //               width: 40,
+                              //               height: 40)),
+
+                              //       // Text(appModel.curScreen.toString())
+                              //       // variable
+                              //     ]),
+                              ),
                         ),
                       ),
+
+                      /**Floating panel between Back panel and Front Panel */
+
+                      appModel.curScreen == Screen.SummaryErrorScreen ||
+                              appModel.curScreen == Screen.SummaryScreen
+                          ? Positioned.fill(
+                              bottom: frontPanelSize(appModel.curScreen) -
+                                  40 * Globals.dheight,
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                    // color: Colors.yellow.withAlpha(100),
+                                    width: 180 * Globals.dwidth,
+                                    height: 90 * Globals.dheight,
+                                    child: SlideTransition(
+                                      position: _offsetAnimation,
+                                      child: Image.asset(
+                                        "assets/app_icons/car.png",
+                                        fit: BoxFit.contain,
+                                      ),
+                                    )),
+                              ))
+                          : SizedBox(),
                     ]),
                   ),
                 ),
@@ -140,21 +199,32 @@ class _BottomPanelState extends State<BottomPanel> {
             ),
 
             /**Floating Panel */
-            // Positioned.fill(
-            //     bottom:
-            //         frontPanelSize(appModel.curScreen) + 25 * Globals.dheight,
-            //     child: Container(
-            //       color: Colors.yellow.withAlpha(100),
-            //       width: 200,
-            //       height: 100,
-            //     )),
+            appModel.curScreen == Screen.BookScreen
+                ? Positioned.fill(
+                    bottom: frontPanelSize(appModel.curScreen) +
+                        25 * Globals.dheight,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                          // color: Colors.yellow.withAlpha(100),
+                          width: 213 * Globals.dwidth,
+                          height: 118 * Globals.dheight,
+                          child: SlideTransition(
+                            position: _offsetAnimation,
+                            child: Image.asset(
+                              "assets/app_icons/car.png",
+                              fit: BoxFit.contain,
+                            ),
+                          )),
+                    ))
+                : SizedBox(),
             Positioned(
                 bottom:
                     frontPanelSize(appModel.curScreen) + 25 * Globals.dheight,
                 child: Column(
                   children: <Widget>[
                     Container(
-                      color: Colors.yellow.withAlpha(100),
+                      color: Colors.yellow.withAlpha(0),
                       width: 200,
                       height: 100,
                     ),
@@ -197,9 +267,18 @@ titleWidget(Screen curScreen) {
     return SizedBox();
 }
 
-body(Screen curScreen) {
+body(AppModel appModel, Key key) {
+  Screen curScreen = appModel.curScreen;
   if (curScreen == Screen.BookScreen) {
-
-    
+    return bookFrame(appModel, key);
+  }
+  if (curScreen == Screen.SummaryScreen) {
+    return summaryFrame(appModel, key);
+  }
+  if (curScreen == Screen.SelectScreen) {
+    return selectFrame(appModel);
+  }
+  if (curScreen == Screen.SummaryErrorScreen) {
+    return summaryErrorFrame(appModel);
   }
 }
