@@ -67,7 +67,7 @@ class _BottomPanelState extends State<BottomPanel>
                   new TileLayerOptions(
                     urlTemplate:
                         "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
-                    backgroundColor: Colors.red,    
+                     
                     additionalOptions: {
                       'subscriptionKey': AuthKeys.mapsAuthKey,
                       // 'z': '12',
