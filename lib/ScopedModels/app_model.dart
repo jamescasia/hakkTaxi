@@ -136,3 +136,11 @@ class MapState {
   double currentZoom = 14.5;
   Key key = UniqueKey();
 }
+
+class Booking {
+  LatLng pickupPoint;
+  String pickupPlace;
+  LatLng dropoffPoint;
+  String dropoffPlace;
+  double tripDuration;
+}

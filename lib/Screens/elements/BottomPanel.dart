@@ -96,16 +96,22 @@ class _BottomPanelState extends State<BottomPanel>
             ),
 
             /**Backest Panel */
-            Positioned(
-                bottom: 0,
-                child: AnimatedContainer(
-                  curve: Curves.fastLinearToSlowEaseIn,
-                  duration: Duration(milliseconds: 500),
-                  height:
-                      backPanelSize(appModel.curScreen) + 50 * Globals.dheight,
-                  color: Colors.red.withAlpha(0),
-                  width: Globals.width,
-                )),
+
+            // appModel.curScreen == Screen.BookScreen
+            //     ? Positioned.fill(
+            //         bottom: 0,
+            //         child: Align(
+            //           alignment: Alignment.bottomCenter,
+            //           child: AnimatedContainer(
+            //             curve: Curves.fastLinearToSlowEaseIn,
+            //             duration: Duration(milliseconds: 500),
+            //             height: backPanelSize(appModel.curScreen) +
+            //                 50 * Globals.dheight,
+            //             color: Colors.red.withAlpha(200),
+            //             width: Globals.width*0.33,
+            //           ),
+            //         ))
+            //     : SizedBox(),
             /**Back Panel */
             Positioned(
               bottom: 0,
@@ -173,7 +179,7 @@ class _BottomPanelState extends State<BottomPanel>
                                     ),
                                   ),
                                 ))
-                            : SizedBox(),
+                            : SizedBox(height: 0),
                         Positioned(
                           bottom: 0,
                           child: ClipRRect(
@@ -238,7 +244,9 @@ class _BottomPanelState extends State<BottomPanel>
                                         ),
                                       )),
                                 ))
-                            : SizedBox(),
+                            : SizedBox(
+                                height: 0,
+                              ),
                       ]),
                     ),
                   ),
@@ -265,20 +273,8 @@ class _BottomPanelState extends State<BottomPanel>
                             ),
                           )),
                     ))
-                : SizedBox(),
-            Positioned(
-                bottom:
-                    frontPanelSize(appModel.curScreen) + 25 * Globals.dheight,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      color: Colors.yellow.withAlpha(0),
-                      width: 200,
-                      height: 100,
-                    ),
-                    SizedBox(width: Globals.width, height: 0)
-                  ],
-                ))
+                : SizedBox(height: 0),
+        
           ],
         ),
       );
@@ -312,7 +308,9 @@ titleWidget(Screen curScreen) {
           color: Colors.white),
     );
   else
-    return SizedBox();
+    return SizedBox(
+      height: 0,
+    );
 }
 
 body(AppModel appModel, Key key) {
