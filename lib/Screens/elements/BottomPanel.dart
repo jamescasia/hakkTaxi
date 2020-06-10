@@ -10,6 +10,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dotted_border/dotted_border.dart';
 
 import 'package:latlong/latlong.dart';
+
+import 'package:location/location.dart';
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/DataModels/AuthKeys.dart';
@@ -59,15 +62,15 @@ class _BottomPanelState extends State<BottomPanel>
             Container(
               height: Globals.height * 0.7,
               child: FlutterMap(
+                key: appModel.mapState.key,
                 options: new MapOptions(
-                  center: new LatLng(37.530039, 126.920451),
-                  zoom: 13.0,
+                  center: appModel.mapState.currentFocus,
+                  zoom: appModel.mapState.currentZoom,
                 ),
                 layers: [
                   new TileLayerOptions(
                     urlTemplate:
                         "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
-                     
                     additionalOptions: {
                       'subscriptionKey': AuthKeys.mapsAuthKey,
                       // 'z': '12',
@@ -76,16 +79,16 @@ class _BottomPanelState extends State<BottomPanel>
                   ),
                   new MarkerLayerOptions(
                     markers: [
-                      new Marker(
-                        point: new LatLng(37.530039, 126.920451),
-                        builder: (ctx) => new Container(
-                          child: FaIcon(
-                            FontAwesomeIcons.mapMarker,
-                            color: Globals.pickerBlue,
-                            size: Globals.dwidth * 40,
-                          ),
-                        ),
-                      ),
+                      // new Marker(
+                      //   point: new LatLng(37.530039, 126.920451),
+                      //   builder: (ctx) => new Container(
+                      //     child: FaIcon(
+                      //       FontAwesomeIcons.mapMarker,
+                      //       color: Globals.pickerBlue,
+                      //       size: Globals.dwidth * 40,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -115,125 +118,129 @@ class _BottomPanelState extends State<BottomPanel>
                   onTap: () {
                     // appModel.nextScreen();
                   },
-                  child: AnimatedContainer(
-                    curve: Curves.fastLinearToSlowEaseIn,
-                    duration: Duration(milliseconds: 500),
-                    width: Globals.width,
-                    height: backPanelSize(appModel.curScreen),
-                    color: Globals.bgBlue,
-                    child: Stack(children: [
-                      /**Title Bar */
-                      Positioned(
-                          top: 20 * Globals.dheight,
-                          left: 28 * Globals.dwidth,
-                          child: titleWidget(appModel.curScreen)
+                  child: Material(
+                    elevation: 15,
+                    child: AnimatedContainer(
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      duration: Duration(milliseconds: 500),
+                      width: Globals.width,
+                      height: backPanelSize(appModel.curScreen),
+                      color: Globals.bgBlue,
+                      child: Stack(children: [
+                        /**Title Bar */
+                        Positioned(
+                            top: 20 * Globals.dheight,
+                            left: 28 * Globals.dwidth,
+                            child: titleWidget(appModel.curScreen)
 
-                          // Text(
-                          //   "Summary",
-                          //   // variable
-                          //   textAlign: TextAlign.start,
-                          //   style: TextStyle(
-                          //       fontFamily: "Lato",
-                          //       fontSize: Globals.dwidth * 28,
-                          //       fontWeight: FontWeight.w600,
-                          //       color: Colors.white),
-                          // )
-                          ),
+                            // Text(
+                            //   "Summary",
+                            //   // variable
+                            //   textAlign: TextAlign.start,
+                            //   style: TextStyle(
+                            //       fontFamily: "Lato",
+                            //       fontSize: Globals.dwidth * 28,
+                            //       fontWeight: FontWeight.w600,
+                            //       color: Colors.white),
+                            // )
+                            ),
 
-                      /** Opt Button */
+                        /** Opt Button */
 
-                      (appModel.curScreen == Screen.BookScreen)
-                          ? Positioned(
-                              top: 18 * Globals.dheight,
-                              right: Globals.dwidth * 24,
-                              child: Container(
-                                width: Globals.dwidth * 44,
-                                height: Globals.dwidth * 44,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue.withAlpha(160),
-                                    borderRadius: BorderRadius.circular(300)),
-                                child: InkWell(
-                                  onTap: () {
-                                    print("yawaw");
-                                    appModel.setScreen(Screen.SelectScreen);
-                                  },
-                                  highlightColor: Colors.red,
-                                  splashColor: Colors.blue,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(300)),
-                                  child: Center(
-                                    child: FaIcon(FontAwesomeIcons.hamburger,
-                                        size: Globals.dwidth * 22,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ))
-                          : SizedBox(),
-                      Positioned(
-                        bottom: 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(Globals.cornerRadius),
-                              bottomLeft: Radius.circular(Globals.cornerRadius),
-                              topRight: Radius.circular(Globals.cornerRadius),
-                              bottomRight:
-                                  Radius.circular(Globals.cornerRadius)),
-                          /**Front Panel */
-                          child: AnimatedContainer(
-                              curve: Curves.fastLinearToSlowEaseIn,
-                              duration: Duration(milliseconds: 500),
-                              color: Colors.grey[300],
-                              width: Globals.width,
-                              padding: EdgeInsets.all(Globals.dwidth * 2),
-                              height: frontPanelSize(appModel.curScreen),
-                              child: body(appModel, UniqueKey())
-
-                              // Column(
-                              //     mainAxisSize: MainAxisSize.max,
-                              //     mainAxisAlignment:
-                              //         MainAxisAlignment.spaceAround,
-                              //     children: [
-                              //       Center(
-                              //           child: Container(
-                              //               color: Colors.green,
-                              //               width: 40,
-                              //               height: 40)),
-                              //       Center(
-                              //           child: Container(
-                              //               color: Colors.yellow,
-                              //               width: 40,
-                              //               height: 40)),
-
-                              //       // Text(appModel.curScreen.toString())
-                              //       // variable
-                              //     ]),
-                              ),
-                        ),
-                      ),
-
-                      /**Floating panel between Back panel and Front Panel */
-
-                      appModel.curScreen == Screen.SummaryErrorScreen ||
-                              appModel.curScreen == Screen.SummaryScreen
-                          ? Positioned.fill(
-                              bottom: frontPanelSize(appModel.curScreen) -
-                                  40 * Globals.dheight,
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
+                        (appModel.curScreen == Screen.BookScreen)
+                            ? Positioned(
+                                top: 18 * Globals.dheight,
+                                right: Globals.dwidth * 24,
                                 child: Container(
-                                    // color: Colors.yellow.withAlpha(100),
-                                    width: 180 * Globals.dwidth,
-                                    height: 90 * Globals.dheight,
-                                    child: SlideTransition(
-                                      position: _offsetAnimation,
-                                      child: Image.asset(
-                                        "assets/app_icons/car.png",
-                                        fit: BoxFit.contain,
-                                      ),
-                                    )),
-                              ))
-                          : SizedBox(),
-                    ]),
+                                  width: Globals.dwidth * 44,
+                                  height: Globals.dwidth * 44,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue.withAlpha(160),
+                                      borderRadius: BorderRadius.circular(300)),
+                                  child: InkWell(
+                                    onTap: () {
+                                      print("yawaw");
+                                      appModel.setScreen(Screen.SelectScreen);
+                                    },
+                                    highlightColor: Colors.red,
+                                    splashColor: Colors.blue,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(300)),
+                                    child: Center(
+                                      child: FaIcon(FontAwesomeIcons.hamburger,
+                                          size: Globals.dwidth * 22,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ))
+                            : SizedBox(),
+                        Positioned(
+                          bottom: 0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(Globals.cornerRadius),
+                                bottomLeft:
+                                    Radius.circular(Globals.cornerRadius),
+                                topRight: Radius.circular(Globals.cornerRadius),
+                                bottomRight:
+                                    Radius.circular(Globals.cornerRadius)),
+                            /**Front Panel */
+                            child: AnimatedContainer(
+                                curve: Curves.fastLinearToSlowEaseIn,
+                                duration: Duration(milliseconds: 500),
+                                color: Colors.grey[300],
+                                width: Globals.width,
+                                padding: EdgeInsets.all(Globals.dwidth * 2),
+                                height: frontPanelSize(appModel.curScreen),
+                                child: body(appModel, UniqueKey())
+
+                                // Column(
+                                //     mainAxisSize: MainAxisSize.max,
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceAround,
+                                //     children: [
+                                //       Center(
+                                //           child: Container(
+                                //               color: Colors.green,
+                                //               width: 40,
+                                //               height: 40)),
+                                //       Center(
+                                //           child: Container(
+                                //               color: Colors.yellow,
+                                //               width: 40,
+                                //               height: 40)),
+
+                                //       // Text(appModel.curScreen.toString())
+                                //       // variable
+                                //     ]),
+                                ),
+                          ),
+                        ),
+
+                        /**Floating panel between Back panel and Front Panel */
+
+                        appModel.curScreen == Screen.SummaryErrorScreen ||
+                                appModel.curScreen == Screen.SummaryScreen
+                            ? Positioned.fill(
+                                bottom: frontPanelSize(appModel.curScreen) -
+                                    40 * Globals.dheight,
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                      // color: Colors.yellow.withAlpha(100),
+                                      width: 180 * Globals.dwidth,
+                                      height: 90 * Globals.dheight,
+                                      child: SlideTransition(
+                                        position: _offsetAnimation,
+                                        child: Image.asset(
+                                          "assets/app_icons/car.png",
+                                          fit: BoxFit.contain,
+                                        ),
+                                      )),
+                                ))
+                            : SizedBox(),
+                      ]),
+                    ),
                   ),
                 ),
               ),
