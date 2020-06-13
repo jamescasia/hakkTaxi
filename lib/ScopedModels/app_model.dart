@@ -1,11 +1,12 @@
 import 'package:grabApp/DataModels/DataPoint.dart';
+import 'package:grabApp/ScopedModels/bookscreen_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/DataModels/AppData.dart';
 import 'package:flutter/material.dart';
 
 import 'package:latlong/latlong.dart';
-
+import 'package:grabApp/DataModels/BookingState.dart';
 import 'package:location/location.dart';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -13,8 +14,10 @@ import 'package:flutter_map/flutter_map.dart';
 class AppModel extends Model {
   Screen curScreen = Screen.BookScreen;
   AppData appData;
-  WidgetState widState;
-  BookState bookState = BookState.NotBooked;
+  BookScreenModel bookScreenModel;
+  // SelectScreenState selectScreenModel;
+  // SummaryScreenState summaryScreenModel;
+  // SummaryErrorScreenState summaryErrorScreenState;
   int i = 0;
 
   Location location = new Location();
@@ -25,8 +28,8 @@ class AppModel extends Model {
 
   AppModel() {
     appData = AppData();
-    widState = WidgetState();
     mapState = MapState();
+    bookScreenModel = BookScreenModel();
     requestPermission();
   }
 
@@ -86,49 +89,13 @@ class AppModel extends Model {
     notifyListeners();
   }
 
-  void manualBook() async {
-    bookState = BookState.Driving;
-    notifyListeners();
-
-    await Future.delayed(Duration(seconds: 2));
-
-    bookState = BookState.Arrived;
-    notifyListeners();
-
-    await Future.delayed(Duration(seconds: 1));
-
+  void bookScreenManualBook() async {
+    await bookScreenModel.manualBook();
     setScreen(Screen.SummaryScreen);
-
-    bookState = BookState.NotBooked;
   }
 
-  void selectBook(DataPoint dataPoint) async {
-    setScreen(Screen.BookScreen);
-    bookState = BookState.Driving;
-    notifyListeners();
-
-    await Future.delayed(Duration(seconds: 2));
-
-    bookState = BookState.Arrived;
-    notifyListeners();
-
-    await Future.delayed(Duration(seconds: 1));
-
-    setScreen(Screen.SummaryErrorScreen);
-
-    bookState = BookState.NotBooked;
-    // setScreen(Screen.SummaryErrorScreen);
-  }
+  void bookScreenSelectBook() {}
 }
-
-class WidgetState {
-  TextEditingController pickupController = TextEditingController();
-  TextEditingController dropoffController = TextEditingController();
-  FocusNode pF = FocusNode();
-  FocusNode dF = FocusNode();
-}
-
-enum BookState { NotBooked, Driving, Arrived }
 
 class MapState {
   LatLng defaultFocus = LatLng(-6.235, 106.858);
@@ -137,11 +104,8 @@ class MapState {
   Key key = UniqueKey();
 }
 
-class Booking {
-  LatLng pickupPoint;
-  String pickupPlace;
-  LatLng dropoffPoint;
-  String dropoffPlace;
-  double tripDuration;
-  bool fromSample = false;
-}
+class SelectScreenState {}
+
+class SummaryScreenState {}
+
+class SummaryErrorScreenState {}

@@ -66,7 +66,7 @@ class _DataPointCardState extends State<DataPointCard> {
             borderRadius: BorderRadius.all(Radius.circular(28))),
         child: InkWell(
           onTap: () {
-            appModel.selectBook(dataPoint);
+            // appModel.selectBook(dataPoint);
           },
           child: Container(
             width: Globals.width * 0.9,

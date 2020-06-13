@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grabApp/DataModels/Globals.dart';
+import 'package:grabApp/ScopedModels/bookscreen_model.dart';
 import 'package:grabApp/Screens/Frames/SelectFrame.dart';
 import 'package:grabApp/Screens/Frames/SummaryErrorFrame.dart';
 import 'package:grabApp/Screens/Frames/SummaryFrame.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/DataModels/AuthKeys.dart';
 import 'package:grabApp/DataModels/Screens.dart';
+
+import 'package:grabApp/DataModels/BookingState.dart';
 
 class BottomPanel extends StatefulWidget {
   BottomPanel();
@@ -65,7 +68,18 @@ class _BottomPanelState extends State<BottomPanel>
                     options: new MapOptions(
                       center: appModel.mapState.currentFocus,
                       zoom: appModel.mapState.currentZoom,
-                      onPositionChanged: (position, hasGesture) { 
+                      onPositionChanged: (position, hasGesture) {
+                        if (appModel.curScreen == Screen.BookScreen) {
+                          if (appModel.bookScreenModel.bookingState ==
+                              BookingState.PickingPickupPoint) {
+                            appModel.bookScreenModel
+                                .showCurrentLatLngPickup(position.center);
+                          } else if (appModel.bookScreenModel.bookingState ==
+                              BookingState.PickingDropoffPoint) {
+                            appModel.bookScreenModel
+                                .showCurrentLatLngDropoff(position.center);
+                          }
+                        }
                       },
                     ),
                     mapController: mapController,
