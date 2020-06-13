@@ -143,4 +143,5 @@ class Booking {
   LatLng dropoffPoint;
   String dropoffPlace;
   double tripDuration;
+  bool fromSample = false;
 }

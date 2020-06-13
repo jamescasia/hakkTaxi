@@ -8,15 +8,11 @@ import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:grabApp/Screens/Frames/BookFrame.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dotted_border/dotted_border.dart';
-
 import 'package:latlong/latlong.dart';
-
 import 'package:location/location.dart';
-
 import 'package:flutter_map/flutter_map.dart';
 import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/DataModels/AuthKeys.dart';
-
 import 'package:grabApp/DataModels/Screens.dart';
 
 class BottomPanel extends StatefulWidget {
@@ -30,6 +26,7 @@ class _BottomPanelState extends State<BottomPanel>
   _BottomPanelState();
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
+  MapController mapController = MapController();
 
   @override
   void initState() {
@@ -61,35 +58,49 @@ class _BottomPanelState extends State<BottomPanel>
           children: <Widget>[
             Container(
               height: Globals.height * 0.7,
-              child: FlutterMap(
-                key: appModel.mapState.key,
-                options: new MapOptions(
-                  center: appModel.mapState.currentFocus,
-                  zoom: appModel.mapState.currentZoom,
-                ),
-                layers: [
-                  new TileLayerOptions(
-                    urlTemplate:
-                        "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
-                    additionalOptions: {
-                      'subscriptionKey': AuthKeys.mapsAuthKey,
-                      // 'z': '12',
-                      // 'x': '12',
-                    },
-                  ),
-                  new MarkerLayerOptions(
-                    markers: [
-                      // new Marker(
-                      //   point: new LatLng(37.530039, 126.920451),
-                      //   builder: (ctx) => new Container(
-                      //     child: FaIcon(
-                      //       FontAwesomeIcons.mapMarker,
-                      //       color: Globals.pickerBlue,
-                      //       size: Globals.dwidth * 40,
-                      //     ),
-                      //   ),
-                      // ),
+              child: Stack(
+                children: <Widget>[
+                  FlutterMap(
+                    key: appModel.mapState.key,
+                    options: new MapOptions(
+                      center: appModel.mapState.currentFocus,
+                      zoom: appModel.mapState.currentZoom,
+                      onPositionChanged: (position, hasGesture) { 
+                      },
+                    ),
+                    mapController: mapController,
+                    layers: [
+                      new TileLayerOptions(
+                        urlTemplate:
+                            "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
+                        additionalOptions: {
+                          'subscriptionKey': AuthKeys.mapsAuthKey,
+                          // 'z': '12',
+                          // 'x': '12',
+                        },
+                      ),
+                      new MarkerLayerOptions(
+                        markers: [
+                          // new Marker(
+                          //   point: new LatLng(37.530039, 126.920451),
+                          //   builder: (ctx) => new Container(
+                          //     child: FaIcon(
+                          //       FontAwesomeIcons.mapMarker,
+                          //       color: Globals.pickerBlue,
+                          //       size: Globals.dwidth * 40,
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
                     ],
+                  ),
+                  Center(
+                    child: FaIcon(
+                      FontAwesomeIcons.mapMarker,
+                      color: Colors.blue,
+                      size: Globals.dwidth * 40,
+                    ),
                   ),
                 ],
               ),
@@ -166,7 +177,8 @@ class _BottomPanelState extends State<BottomPanel>
                                   child: InkWell(
                                     onTap: () {
                                       print("yawaw");
-                                      appModel.setScreen(Screen.SelectScreen);
+                                      // appModel.setScreen(Screen.SelectScreen);
+                                      print(mapController.center);
                                     },
                                     highlightColor: Colors.red,
                                     splashColor: Colors.blue,
@@ -274,7 +286,6 @@ class _BottomPanelState extends State<BottomPanel>
                           )),
                     ))
                 : SizedBox(height: 0),
-        
           ],
         ),
       );
