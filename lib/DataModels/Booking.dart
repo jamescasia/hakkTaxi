@@ -7,4 +7,12 @@ class Booking {
   String dropoffPlace;
   double tripDuration;
   bool fromSample = false;
+
+  Booking(
+      {this.pickupPoint,
+      this.pickupPlace,
+      this.dropoffPoint,
+      this.dropoffPlace,
+      this.tripDuration,
+      this.fromSample});
 }

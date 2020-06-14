@@ -200,14 +200,10 @@ bookFrame(AppModel appModel, UniqueKey key) {
                           ),
                         ),
                       ));
-
-                      print(appModel.bookScreenModel.pickupPoint);
-                      print(bookScreenModel.pickupPoint);
-
-                      print(appModel.mapState.markers);
+ 
+ 
                     } else if (bookScreenModel.bookingState ==
-                        BookingState.PickingDropoffPoint) {
-                      print("added dropoff");
+                        BookingState.PickingDropoffPoint) { 
                       appModel.mapStatePlaceDropoffPointMarker(new Marker(
                         point: bookScreenModel.dropoffPoint,
                         builder: (ctx) => Container(
@@ -239,8 +235,7 @@ bookFrame(AppModel appModel, UniqueKey key) {
                             ],
                           ),
                         ),
-                      ));
-                      print(bookScreenModel.dropoffPoint);
+                      )); 
                     }
 
                     appModel.bookScreenPressBookButton();

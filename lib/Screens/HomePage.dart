@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grabApp/DataModels/Globals.dart';
+import 'package:grabApp/ScopedModels/bookscreen_model.dart';
 import 'elements/BottomPanel.dart';
 import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -33,6 +34,7 @@ class _GrabAppState extends State<GrabApp> {
           behavior: ScrollBehaviour(),
           child: WillPopScope(
             onWillPop: () {
+              appModel.bookScreenInitialize();
               appModel.setScreen(Screen.BookScreen);
             },
             child: Material(

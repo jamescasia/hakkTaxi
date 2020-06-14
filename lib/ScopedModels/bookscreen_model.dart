@@ -13,12 +13,22 @@ class BookScreenModel extends Model {
   String dropoffFieldText = '';
   LatLng currentCenter;
   LatLng pickupPoint;
+  String pickupPlace;
+  String dropoffPlace;
   LatLng dropoffPoint;
   BookingState bookingState = BookingState.PickingPickupPoint;
-  Booking booking = Booking();
   AppRequests appRequests;
 
   BookScreenModel() {}
+
+  initialize() {
+    pickupFieldText = '';
+    dropoffFieldText = '';
+    currentCenter = null;
+    pickupPoint = null;
+    dropoffPoint = null;
+    bookingState = BookingState.PickingPickupPoint;
+  }
 
   showCurrentLatLngPickup(LatLng pos) async {
     currentCenter = pos;
@@ -31,7 +41,7 @@ class BookScreenModel extends Model {
   showCurrentLatLngDropoff(LatLng pos) async {
     currentCenter = pos;
     dropoffPoint = currentCenter;
-  
+
     dropoffFieldText =
         "${currentCenter.latitude.toStringAsFixed(6)}, ${currentCenter.longitude.toStringAsFixed(6)}";
     notifyListeners();
@@ -39,45 +49,52 @@ class BookScreenModel extends Model {
 
   showCurrentPlacePickup() async {
     pickupPoint = currentCenter;
-    pickupFieldText =
+    pickupPlace =
         ((await AppRequests.getAddressFromLatLng(currentCenter))['addresses'][0]
             ['address']['freeformAddress']);
+
+    pickupFieldText = pickupPlace;
     notifyListeners();
   }
 
   showCurrentPlaceDropoff() async {
     dropoffPoint = currentCenter;
-    dropoffFieldText =
+    dropoffPlace =
         ((await AppRequests.getAddressFromLatLng(currentCenter))['addresses'][0]
             ['address']['freeformAddress']);
+    dropoffFieldText = dropoffPlace;
     notifyListeners();
   }
 
-  manualBook() async {
+  manualBook(Booking booking) async {
     bookingState = BookingState.Driving;
     notifyListeners();
 
-    await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2));
 
-    bookingState = BookingState.Arrived;
-    notifyListeners();
+    // bookingState = BookingState.Arrived;
+    // notifyListeners();
 
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(seconds: 1));
 
-    bookingState = BookingState.NotBooked;
+    // bookingState = BookingState.NotBooked;
   }
 
-  pressBookButton() {
+  pressBookButton() async {
     if (bookingState == BookingState.PickingPickupPoint) {
       bookingState = BookingState.PickingDropoffPoint;
     } else if (bookingState == BookingState.PickingDropoffPoint) {
       bookingState = BookingState.NotBooked;
     } else if (bookingState == BookingState.NotBooked) {
       bookingState = BookingState.Driving;
+      notifyListeners();
+
       // call the api
-    } else if (bookingState == BookingState.Driving) {
+
+      await Future.delayed(Duration(milliseconds: 2000));
       bookingState = BookingState.Arrived;
     }
+
     notifyListeners();
   }
 

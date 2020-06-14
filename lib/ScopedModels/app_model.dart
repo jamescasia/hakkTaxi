@@ -1,3 +1,4 @@
+import 'package:grabApp/DataModels/Booking.dart';
 import 'package:grabApp/DataModels/DataPoint.dart';
 import 'package:grabApp/ScopedModels/bookscreen_model.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -15,9 +16,9 @@ class AppModel extends Model {
   Screen curScreen = Screen.BookScreen;
   AppData appData;
   BookScreenModel bookScreenModel;
-  // SelectScreenState selectScreenModel;
-  // SummaryScreenState summaryScreenModel;
-  // SummaryErrorScreenState summaryErrorScreenState;
+  SelectScreenModel selectScreenModel;
+  SummaryScreenModel summaryScreenModel;
+  SummaryErrorScreenModel summaryErrorScreenModel;
   int i = 0;
 
   Location location = new Location();
@@ -30,6 +31,8 @@ class AppModel extends Model {
     appData = AppData();
     mapState = MapState();
     bookScreenModel = BookScreenModel();
+    summaryScreenModel = SummaryScreenModel();
+    summaryErrorScreenModel = SummaryErrorScreenModel();
     requestPermission();
   }
 
@@ -89,17 +92,40 @@ class AppModel extends Model {
     notifyListeners();
   }
 
-  void bookScreenManualBook() async {
-    await bookScreenModel.manualBook();
-    setScreen(Screen.SummaryScreen);
+  void bookScreenManualBook(Booking booking) async {
+    mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+    await bookScreenModel.manualBook(booking);
+    summaryScreenModel.setBooking(booking);
+    // setScreen(Screen.SummaryScreen);
+
+    // todo: feed booking to the next screen
   }
 
-  void bookScreenPressBookButton() {
-    bookScreenModel.pressBookButton();
-    notifyListeners();
+  void bookScreenPressBookButton() async {
+    if (bookScreenModel.bookingState == BookingState.NotBooked) {
+      Booking booking = Booking(
+          pickupPoint: bookScreenModel.pickupPoint,
+          pickupPlace: bookScreenModel.pickupPlace,
+          dropoffPoint: bookScreenModel.dropoffPoint,
+          dropoffPlace: bookScreenModel.dropoffPlace,
+          tripDuration: 404,
+          fromSample: false);
+      bookScreenManualBook(booking);
+
+      notifyListeners();
+    } else {
+      await bookScreenModel.pressBookButton();
+      notifyListeners();
+    }
   }
 
   void bookScreenSelectBook() {}
+
+  void bookScreenInitialize() {
+    mapState.markers = [];
+    bookScreenModel.initialize();
+    notifyListeners();
+  }
 
   void mapStatePlacePickupPointMarker(Marker marker) {
     mapState.placePickupPointMarker(marker);
@@ -119,6 +145,7 @@ class MapState {
   Key key = UniqueKey();
   List<Marker> markers = [];
 
+  MapController mapController = MapController();
   placePickupPointMarker(Marker marker) {
     // markers[0] = marker;
     markers.add(marker);
@@ -130,10 +157,25 @@ class MapState {
     markers.add(marker);
     // key = UniqueKey();
   }
+
+  zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
+    mapController.move(
+        LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
+            0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
+        12);
+  }
 }
 
-class SelectScreenState {}
+class SelectScreenModel {}
 
-class SummaryScreenState {}
+class SummaryScreenModel extends Model {
+  Booking booking;
 
-class SummaryErrorScreenState {}
+  setBooking(Booking booking) {
+    this.booking = booking;
+  }
+}
+
+class SummaryErrorScreenModel extends Model {
+  Booking booking;
+}

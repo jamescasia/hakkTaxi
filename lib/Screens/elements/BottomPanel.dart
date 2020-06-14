@@ -31,7 +31,6 @@ class _BottomPanelState extends State<BottomPanel>
   AnimationController _markerAnimLandController;
   Animation<Offset> _markerOffsetUpDownAnimation;
   var _markerOffsetLandAnimation;
-  MapController mapController = MapController();
   bool picking = false;
 
   @override
@@ -132,7 +131,7 @@ class _BottomPanelState extends State<BottomPanel>
                           }
                         },
                       ),
-                      mapController: mapController,
+                      mapController: appModel.mapState.mapController,
                       layers: [
                         new TileLayerOptions(
                           urlTemplate:
@@ -288,9 +287,7 @@ class _BottomPanelState extends State<BottomPanel>
                                       borderRadius: BorderRadius.circular(300)),
                                   child: InkWell(
                                     onTap: () {
-                                      print("yawaw");
-                                      // appModel.setScreen(Screen.SelectScreen);
-                                      print(mapController.center);
+                                      appModel.setScreen(Screen.SelectScreen);
                                     },
                                     highlightColor: Colors.red,
                                     splashColor: Colors.blue,

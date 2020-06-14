@@ -179,6 +179,7 @@ summaryFrame(AppModel appModel, UniqueKey key) {
           child: MaterialButton(
             elevation: 1,
             onPressed: () {
+              appModel.bookScreenInitialize();
               appModel.setScreen(Screen.BookScreen);
             },
             color: Colors.blue,
