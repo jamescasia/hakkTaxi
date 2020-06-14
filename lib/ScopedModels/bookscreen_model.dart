@@ -1,3 +1,4 @@
+import 'package:grabApp/DataModels/AppRequests.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +12,17 @@ class BookScreenModel extends Model {
   String pickupFieldText = '';
   String dropoffFieldText = '';
   LatLng currentCenter;
+  LatLng pickupPoint;
+  LatLng dropoffPoint;
   BookingState bookingState = BookingState.PickingPickupPoint;
   Booking booking = Booking();
+  AppRequests appRequests;
 
   BookScreenModel() {}
 
   showCurrentLatLngPickup(LatLng pos) async {
     currentCenter = pos;
+    pickupPoint = currentCenter;
     pickupFieldText =
         "${currentCenter.latitude.toStringAsFixed(6)}, ${currentCenter.longitude.toStringAsFixed(6)}";
     notifyListeners();
@@ -25,18 +30,27 @@ class BookScreenModel extends Model {
 
   showCurrentLatLngDropoff(LatLng pos) async {
     currentCenter = pos;
+    dropoffPoint = currentCenter;
+  
     dropoffFieldText =
         "${currentCenter.latitude.toStringAsFixed(6)}, ${currentCenter.longitude.toStringAsFixed(6)}";
     notifyListeners();
   }
 
-  showCurrentPlacePickup(LatLng pos) {
-    booking.pickupPoint = pos;
-    // booking.pickupPlace
+  showCurrentPlacePickup() async {
+    pickupPoint = currentCenter;
+    pickupFieldText =
+        ((await AppRequests.getAddressFromLatLng(currentCenter))['addresses'][0]
+            ['address']['freeformAddress']);
+    notifyListeners();
   }
 
-  showCurrentPlaceDropoff(LatLng pos) {
-    booking.dropoffPoint = pos;
+  showCurrentPlaceDropoff() async {
+    dropoffPoint = currentCenter;
+    dropoffFieldText =
+        ((await AppRequests.getAddressFromLatLng(currentCenter))['addresses'][0]
+            ['address']['freeformAddress']);
+    notifyListeners();
   }
 
   manualBook() async {
@@ -53,7 +67,7 @@ class BookScreenModel extends Model {
     bookingState = BookingState.NotBooked;
   }
 
-  pressBookScreenButton() {
+  pressBookButton() {
     if (bookingState == BookingState.PickingPickupPoint) {
       bookingState = BookingState.PickingDropoffPoint;
     } else if (bookingState == BookingState.PickingDropoffPoint) {

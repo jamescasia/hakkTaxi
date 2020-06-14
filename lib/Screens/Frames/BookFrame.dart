@@ -9,6 +9,9 @@ import 'package:grabApp/DataModels/Screens.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:grabApp/Screens/elements/PathWidget.dart';
 
+import 'package:latlong/latlong.dart';
+import 'package:location/location.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 bookFrame(AppModel appModel, UniqueKey key) {
@@ -162,7 +165,85 @@ bookFrame(AppModel appModel, UniqueKey key) {
                 child: MaterialButton(
                   elevation: 1,
                   onPressed: () async {
-                    bookScreenModel.pressBookScreenButton();
+                    if (bookScreenModel.bookingState ==
+                        BookingState.PickingPickupPoint) {
+                      print("added pickup");
+                      appModel.mapStatePlacePickupPointMarker(new Marker(
+                        point: bookScreenModel.pickupPoint,
+                        builder: (ctx) => Container(
+                          height: 30,
+                          child: Stack(
+                            children: <Widget>[
+                              Center(
+                                child: Container(
+                                    width: 4,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(300)))),
+                              ),
+                              Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    width: 19,
+                                    height: 19,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(300))),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ));
+
+                      print(appModel.bookScreenModel.pickupPoint);
+                      print(bookScreenModel.pickupPoint);
+
+                      print(appModel.mapState.markers);
+                    } else if (bookScreenModel.bookingState ==
+                        BookingState.PickingDropoffPoint) {
+                      print("added dropoff");
+                      appModel.mapStatePlaceDropoffPointMarker(new Marker(
+                        point: bookScreenModel.dropoffPoint,
+                        builder: (ctx) => Container(
+                          height: 30,
+                          child: Stack(
+                            children: <Widget>[
+                              Center(
+                                child: Container(
+                                    width: 4,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.lightBlue,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(300)))),
+                              ),
+                              Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    width: 19,
+                                    height: 19,
+                                    decoration: BoxDecoration(
+                                        color: Colors.lightBlue,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(300))),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ));
+                      print(bookScreenModel.dropoffPoint);
+                    }
+
+                    appModel.bookScreenPressBookButton();
                   },
                   color: Colors.blue,
                   splashColor: Colors.blue,
@@ -178,7 +259,7 @@ bookFrame(AppModel appModel, UniqueKey key) {
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               fontFamily: "Lato",
-                              fontSize: Globals.dwidth * 24,
+                              fontSize: 19,
                               fontWeight: FontWeight.w600,
                               color: Colors.white),
                         ),

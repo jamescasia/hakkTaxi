@@ -25,32 +25,48 @@ class BottomPanel extends StatefulWidget {
 }
 
 class _BottomPanelState extends State<BottomPanel>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   _BottomPanelState();
-  AnimationController _controller;
-  Animation<Offset> _offsetAnimation;
+  AnimationController _markerAnimUpDownController;
+  AnimationController _markerAnimLandController;
+  Animation<Offset> _markerOffsetUpDownAnimation;
+  var _markerOffsetLandAnimation;
   MapController mapController = MapController();
+  bool picking = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 50),
+    _markerAnimUpDownController = AnimationController(
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _offsetAnimation = Tween<Offset>(
+
+    _markerOffsetUpDownAnimation = Tween<Offset>(
       begin: Offset.zero,
-      end: const Offset(1.5, 0.0),
+      end: const Offset(0, 0.3),
     ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticIn,
+      parent: _markerAnimUpDownController,
+      curve: Curves.easeInOut,
+    ));
+// _markerAnimLandController = AnimationController(
+    //   duration: const Duration(milliseconds: 800),
+    //   vsync: this,
+    // );
+    _markerOffsetLandAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _markerAnimUpDownController,
+      curve: Curves.easeInOut,
     ));
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    _markerAnimUpDownController.dispose();
+    _markerAnimLandController.dispose();
   }
 
   @override
@@ -63,59 +79,141 @@ class _BottomPanelState extends State<BottomPanel>
               height: Globals.height * 0.7,
               child: Stack(
                 children: <Widget>[
-                  FlutterMap(
-                    key: appModel.mapState.key,
-                    options: new MapOptions(
-                      center: appModel.mapState.currentFocus,
-                      zoom: appModel.mapState.currentZoom,
-                      onPositionChanged: (position, hasGesture) {
-                        if (appModel.curScreen == Screen.BookScreen) {
-                          if (appModel.bookScreenModel.bookingState ==
-                              BookingState.PickingPickupPoint) {
-                            appModel.bookScreenModel
-                                .showCurrentLatLngPickup(position.center);
-                          } else if (appModel.bookScreenModel.bookingState ==
-                              BookingState.PickingDropoffPoint) {
-                            appModel.bookScreenModel
-                                .showCurrentLatLngDropoff(position.center);
+                  Listener(
+                    onPointerUp: (det) {
+                      if (appModel.curScreen == Screen.BookScreen) {
+                        if (appModel.bookScreenModel.bookingState ==
+                            BookingState.PickingPickupPoint) {
+                          appModel.bookScreenModel.showCurrentPlacePickup();
+                          if (picking) {
+                            _markerAnimUpDownController.forward();
+                            picking = false;
+                          }
+                        } else if (appModel.bookScreenModel.bookingState ==
+                            BookingState.PickingDropoffPoint) {
+                          appModel.bookScreenModel.showCurrentPlaceDropoff();
+                          // mapController.
+                          if (picking) {
+                            _markerAnimUpDownController.forward();
+                            picking = false;
                           }
                         }
-                      },
-                    ),
-                    mapController: mapController,
-                    layers: [
-                      new TileLayerOptions(
-                        urlTemplate:
-                            "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
-                        additionalOptions: {
-                          'subscriptionKey': AuthKeys.mapsAuthKey,
-                          // 'z': '12',
-                          // 'x': '12',
+                      }
+                    },
+                    onPointerDown: (det) {
+                      if (appModel.curScreen == Screen.BookScreen) {
+                        if (!picking &&
+                            (appModel.bookScreenModel.bookingState ==
+                                    BookingState.PickingPickupPoint ||
+                                appModel.bookScreenModel.bookingState ==
+                                    BookingState.PickingDropoffPoint)) {
+                          _markerAnimUpDownController.repeat(reverse: true);
+
+                          picking = true;
+                        }
+                      }
+                    },
+                    child: FlutterMap(
+                      key: appModel.mapState.key,
+                      options: new MapOptions(
+                        center: appModel.mapState.currentFocus,
+                        zoom: appModel.mapState.currentZoom,
+                        onPositionChanged: (position, hasGesture) {
+                          if (appModel.curScreen == Screen.BookScreen) {
+                            if (appModel.bookScreenModel.bookingState ==
+                                BookingState.PickingPickupPoint) {
+                              appModel.bookScreenModel
+                                  .showCurrentLatLngPickup(position.center);
+                            } else if (appModel.bookScreenModel.bookingState ==
+                                BookingState.PickingDropoffPoint) {
+                              appModel.bookScreenModel
+                                  .showCurrentLatLngDropoff(position.center);
+                            }
+                          }
                         },
                       ),
-                      new MarkerLayerOptions(
-                        markers: [
-                          // new Marker(
-                          //   point: new LatLng(37.530039, 126.920451),
-                          //   builder: (ctx) => new Container(
-                          //     child: FaIcon(
-                          //       FontAwesomeIcons.mapMarker,
-                          //       color: Globals.pickerBlue,
-                          //       size: Globals.dwidth * 40,
-                          //     ),
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.mapMarker,
-                      color: Colors.blue,
-                      size: Globals.dwidth * 40,
+                      mapController: mapController,
+                      layers: [
+                        new TileLayerOptions(
+                          urlTemplate:
+                              "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
+                          additionalOptions: {
+                            'subscriptionKey': AuthKeys.mapsAuthKey,
+                            // 'z': '12',
+                            // 'x': '12',
+                          },
+                        ),
+                        new MarkerLayerOptions(
+                          markers: appModel.mapState.markers,
+                        )
+                      ],
                     ),
                   ),
+                  appModel.bookScreenModel.bookingState ==
+                              BookingState.PickingDropoffPoint ||
+                          appModel.bookScreenModel.bookingState ==
+                              BookingState.PickingPickupPoint
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 52),
+                            child: SlideTransition(
+                              position: _markerOffsetUpDownAnimation,
+                              child: Transform.scale(
+                                scale: 1.23,
+                                child: Container(
+                                  height: 30,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Center(
+                                        child: Container(
+                                            width: 4,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                                color: appModel.bookScreenModel
+                                                            .bookingState ==
+                                                        BookingState
+                                                            .PickingPickupPoint
+                                                    ? Colors.red
+                                                    : Colors.lightBlue,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(300)))),
+                                      ),
+                                      Positioned.fill(
+                                        child: Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Container(
+                                            width: 19,
+                                            height: 19,
+                                            decoration: BoxDecoration(
+                                                color: appModel.bookScreenModel
+                                                            .bookingState ==
+                                                        BookingState
+                                                            .PickingPickupPoint
+                                                    ? Colors.red
+                                                    : Colors.lightBlue,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(300))),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+                  Center(
+                      child: Container(width: 1, height: 1, color: Colors.red)),
+                  // GestureDetector(
+                  //   behavior: HitTestBehavior.translucent,
+                  //   excludeFromSemantics: true,
+                  //   onScaleEnd: (details) {
+                  //     // _markerAnimUpDownController.stop();
+                  //     print("releasedO;");
+                  //   },
+                  // ),
                 ],
               ),
             ),
@@ -262,12 +360,9 @@ class _BottomPanelState extends State<BottomPanel>
                                       // color: Colors.yellow.withAlpha(100),
                                       width: 180 * Globals.dwidth,
                                       height: 90 * Globals.dheight,
-                                      child: SlideTransition(
-                                        position: _offsetAnimation,
-                                        child: Image.asset(
-                                          "assets/app_icons/car.png",
-                                          fit: BoxFit.contain,
-                                        ),
+                                      child: Image.asset(
+                                        "assets/app_icons/taxi.png",
+                                        fit: BoxFit.contain,
                                       )),
                                 ))
                             : SizedBox(
@@ -291,12 +386,9 @@ class _BottomPanelState extends State<BottomPanel>
                           // color: Colors.yellow.withAlpha(100),
                           width: 213 * Globals.dwidth,
                           height: 118 * Globals.dheight,
-                          child: SlideTransition(
-                            position: _offsetAnimation,
-                            child: Image.asset(
-                              "assets/app_icons/car.png",
-                              fit: BoxFit.contain,
-                            ),
+                          child: Image.asset(
+                            "assets/app_icons/taxi.png",
+                            fit: BoxFit.contain,
                           )),
                     ))
                 : SizedBox(height: 0),

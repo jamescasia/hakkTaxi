@@ -4,7 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/DataModels/AppData.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:grabApp/DataModels/BookingState.dart';
 import 'package:location/location.dart';
@@ -94,7 +94,22 @@ class AppModel extends Model {
     setScreen(Screen.SummaryScreen);
   }
 
+  void bookScreenPressBookButton() {
+    bookScreenModel.pressBookButton();
+    notifyListeners();
+  }
+
   void bookScreenSelectBook() {}
+
+  void mapStatePlacePickupPointMarker(Marker marker) {
+    mapState.placePickupPointMarker(marker);
+    notifyListeners();
+  }
+
+  void mapStatePlaceDropoffPointMarker(Marker marker) {
+    mapState.placeDropoffPointMarker(marker);
+    notifyListeners();
+  }
 }
 
 class MapState {
@@ -102,6 +117,19 @@ class MapState {
   LatLng currentFocus = LatLng(-6.235, 106.858);
   double currentZoom = 14.5;
   Key key = UniqueKey();
+  List<Marker> markers = [];
+
+  placePickupPointMarker(Marker marker) {
+    // markers[0] = marker;
+    markers.add(marker);
+    // key = UniqueKey();
+  }
+
+  placeDropoffPointMarker(Marker marker) {
+    // markers[1] = marker;
+    markers.add(marker);
+    // key = UniqueKey();
+  }
 }
 
 class SelectScreenState {}
