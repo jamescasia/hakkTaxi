@@ -82,11 +82,12 @@ bookFrame(AppModel appModel, UniqueKey key) {
                                         Positioned(
                                           bottom: 6 * Globals.dheight,
                                           child: Container(
-                                            width: Globals.width,
+                                            width: Globals.width * 0.75,
                                             child: Text(
                                               bookScreenModel.pickupFieldText,
                                               // focusNode: bookScreenModel.pF,
-                                              maxLines: 1,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.visible,
 
                                               textAlign: TextAlign.left,
                                               // textAlignVertical:
@@ -135,10 +136,10 @@ bookFrame(AppModel appModel, UniqueKey key) {
                                         Positioned(
                                           bottom: 6 * Globals.dheight,
                                           child: Container(
-                                            width: Globals.width,
+                                            width: Globals.width * 0.75,
                                             child: Text(
                                               bookScreenModel.dropoffFieldText,
-                                              maxLines: 1,
+                                              maxLines: 2,
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                   fontFamily: "Lato",

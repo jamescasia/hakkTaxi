@@ -10,7 +10,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:grabApp/DataModels/BookingState.dart';
 import 'package:location/location.dart';
-
+import 'package:grabApp/helpers/AnimatedMapController.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 class AppModel extends Model {
@@ -117,10 +117,12 @@ class AppModel extends Model {
     mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
     await mapState.placePathBetweenPickupAndDropoff(
         booking.pickupPoint, booking.dropoffPoint);
+
+    notifyListeners();
     await bookScreenModel.manualBook(booking);
     summaryScreenModel.setBooking(booking);
+    setScreen(Screen.SummaryScreen);
     notifyListeners();
-    // setScreen(Screen.SummaryScreen);
 
     // todo: feed booking to the next screen
   }
@@ -156,7 +158,7 @@ class MapState {
   Key key = UniqueKey();
   List<Marker> markers = [];
   List<LatLng> pathPoints = [];
-
+  AnimatedMapController animMapController;
   MapController mapController = MapController();
   initialize() {
     markers = [];
@@ -166,7 +168,7 @@ class MapState {
 
   setCurrentFocus(LatLng pos) {
     currentFocus = pos;
-    mapController.move(currentFocus, currentZoom);
+    animMapController.move(currentFocus, currentZoom);
   }
 
   placePickupPointMarker(Marker marker) {
@@ -197,8 +199,10 @@ class MapState {
 //     print(temp);
   }
 
+  
+
   zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
-    mapController.move(
+    animMapController.move(
         LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
             0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
         14);

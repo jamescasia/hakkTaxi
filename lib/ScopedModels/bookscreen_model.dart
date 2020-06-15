@@ -70,14 +70,15 @@ class BookScreenModel extends Model {
     bookingState = BookingState.Driving;
     notifyListeners();
 
-    // await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
 
-    // bookingState = BookingState.Arrived;
-    // notifyListeners();
+    bookingState = BookingState.Arrived;
+    notifyListeners();
 
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
 
-    // bookingState = BookingState.NotBooked;
+    notifyListeners();
+    bookingState = BookingState.NotBooked;
   }
 
   pressBookButton() async {

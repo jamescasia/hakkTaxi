@@ -12,6 +12,8 @@ import 'package:grabApp/Screens/Frames/SummaryErrorFrame.dart';
 import 'package:grabApp/Screens/Frames/SummaryFrame.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'package:grabApp/helpers/AnimatedMapController.dart';
+
 class BottomPanel extends StatefulWidget {
   BottomPanel();
   @override
@@ -65,6 +67,8 @@ class _BottomPanelState extends State<BottomPanel>
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, appModel) {
+      appModel.mapState.animMapController = AnimatedMapController(
+          mapController: appModel.mapState.mapController, tickerProvider: this);
       return Container(
         child: Stack(
           children: <Widget>[
@@ -140,7 +144,7 @@ class _BottomPanelState extends State<BottomPanel>
                         ),
                         PolylineLayerOptions(polylines: [
                           Polyline(
-                              strokeWidth: 12,
+                              strokeWidth: 14,
                               // color: Colors.blue,
                               gradientColors: [
                                 Colors.red,
