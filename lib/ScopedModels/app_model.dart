@@ -1,3 +1,4 @@
+import 'package:grabApp/DataModels/AppRequests.dart';
 import 'package:grabApp/DataModels/Booking.dart';
 import 'package:grabApp/DataModels/DataPoint.dart';
 import 'package:grabApp/ScopedModels/bookscreen_model.dart';
@@ -94,15 +95,6 @@ class AppModel extends Model {
   //   notifyListeners();
   // }
 
-  void bookScreenManualBook(Booking booking) async {
-    mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
-    await bookScreenModel.manualBook(booking);
-    summaryScreenModel.setBooking(booking);
-    // setScreen(Screen.SummaryScreen);
-
-    // todo: feed booking to the next screen
-  }
-
   void bookScreenPressBookButton() async {
     if (bookScreenModel.bookingState == BookingState.NotBooked) {
       Booking booking = Booking(
@@ -119,6 +111,18 @@ class AppModel extends Model {
       await bookScreenModel.pressBookButton();
       notifyListeners();
     }
+  }
+
+  void bookScreenManualBook(Booking booking) async {
+    mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+    await mapState.placePathBetweenPickupAndDropoff(
+        booking.pickupPoint, booking.dropoffPoint);
+    await bookScreenModel.manualBook(booking);
+    summaryScreenModel.setBooking(booking);
+    notifyListeners();
+    // setScreen(Screen.SummaryScreen);
+
+    // todo: feed booking to the next screen
   }
 
   void bookScreenSelectBook() {}
@@ -148,13 +152,15 @@ class MapState {
   LatLng currentFocus = LatLng(-6.235, 106.858);
 
   LatLng currentUserLocation = LatLng(-6.235, 106.858);
-  double currentZoom = 12;
+  double currentZoom = 14;
   Key key = UniqueKey();
   List<Marker> markers = [];
+  List<LatLng> pathPoints = [];
 
   MapController mapController = MapController();
   initialize() {
     markers = [];
+    pathPoints = [];
     setCurrentFocus(currentUserLocation);
   }
 
@@ -175,11 +181,27 @@ class MapState {
     // key = UniqueKey();
   }
 
+  placePathBetweenPickupAndDropoff(LatLng pickup, LatLng dropoff) async {
+    var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
+    // print(res);
+
+    var path = res['routes'][0]['legs'][0]['points'];
+    for (dynamic p in path) {
+      pathPoints.add(LatLng(p['latitude'], p['longitude']));
+    }
+    print(path);
+    print(pathPoints);
+
+//     pathPoints =
+// // print('taeil');
+//     print(temp);
+  }
+
   zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
     mapController.move(
         LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
             0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
-        12);
+        14);
   }
 }
 

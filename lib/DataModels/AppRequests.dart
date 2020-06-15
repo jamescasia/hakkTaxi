@@ -14,4 +14,10 @@ class AppRequests {
 
     // return;
   }
+
+  static getPathBetweenPoints(LatLng orig, LatLng des) async {
+    return (json.decode((await http.get(
+            'https://atlas.microsoft.com/route/directions/json?subscription-key=${AuthKeys.mapsAuthKey}&api-version=1.0&query=${orig.latitude}%2C${orig.longitude}%3A${des.latitude}%2C${des.longitude}'))
+        .body));
+  }
 }

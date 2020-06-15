@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:grabApp/DataModels/AuthKeys.dart';
+import 'package:grabApp/DataModels/BookingState.dart';
 import 'package:grabApp/DataModels/Globals.dart';
-import 'package:grabApp/ScopedModels/bookscreen_model.dart';
+import 'package:grabApp/DataModels/Screens.dart';
+import 'package:grabApp/ScopedModels/app_model.dart';
+import 'package:grabApp/Screens/Frames/BookFrame.dart';
 import 'package:grabApp/Screens/Frames/SelectFrame.dart';
 import 'package:grabApp/Screens/Frames/SummaryErrorFrame.dart';
 import 'package:grabApp/Screens/Frames/SummaryFrame.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:grabApp/ScopedModels/app_model.dart';
-import 'package:grabApp/Screens/Frames/BookFrame.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:latlong/latlong.dart';
-import 'package:location/location.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:grabApp/DataModels/Screens.dart';
-import 'package:grabApp/DataModels/AuthKeys.dart';
-import 'package:grabApp/DataModels/Screens.dart';
-
-import 'package:grabApp/DataModels/BookingState.dart';
 
 class BottomPanel extends StatefulWidget {
   BottomPanel();
@@ -116,7 +110,7 @@ class _BottomPanelState extends State<BottomPanel>
                       key: appModel.mapState.key,
                       options: new MapOptions(
                         center: appModel.mapState.currentFocus,
-                        zoom: appModel.mapState.currentZoom, 
+                        zoom: appModel.mapState.currentZoom,
                         onPositionChanged: (position, hasGesture) {
                           if (appModel.curScreen == Screen.BookScreen) {
                             if (appModel.bookScreenModel.bookingState ==
@@ -135,16 +129,32 @@ class _BottomPanelState extends State<BottomPanel>
                       layers: [
                         new TileLayerOptions(
                           urlTemplate:
-                              "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style=main&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
+                              "https://atlas.microsoft.com/map/tile/png?api-version=1&layer=basic&style={style}&tileSize=256&view=Auto&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}",
                           additionalOptions: {
                             'subscriptionKey': AuthKeys.mapsAuthKey,
+                            'style': 'main'
+
                             // 'z': '12',
                             // 'x': '12',
                           },
                         ),
+                        PolylineLayerOptions(polylines: [
+                          Polyline(
+                              strokeWidth: 12,
+                              // color: Colors.blue,
+                              gradientColors: [
+                                Colors.red,
+                                Colors.red,
+                                Colors.purple,
+                                Colors.blue,
+                                Colors.blue[600]
+                              ],
+                              colorsStop: [1, 2, 3, 4],
+                              points: appModel.mapState.pathPoints)
+                        ]),
                         new MarkerLayerOptions(
                           markers: appModel.mapState.markers,
-                        )
+                        ),
                       ],
                     ),
                   ),
