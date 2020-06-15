@@ -12,6 +12,7 @@ import 'package:grabApp/DataModels/BookingState.dart';
 import 'package:location/location.dart';
 import 'package:grabApp/helpers/AnimatedMapController.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'dart:math' as math;
 
 class AppModel extends Model {
   Screen curScreen = Screen.BookScreen;
@@ -99,13 +100,6 @@ class AppModel extends Model {
 
   void bookScreenPressBookButton() async {
     if (bookScreenModel.bookingState == BookingState.NotBooked) {
-      Booking booking = Booking(
-          pickupPoint: bookScreenModel.pickupPoint,
-          pickupPlace: bookScreenModel.pickupPlace,
-          dropoffPoint: bookScreenModel.dropoffPoint,
-          dropoffPlace: bookScreenModel.dropoffPlace,
-          tripDuration: 404,
-          fromSample: false);
       bookScreenManualBook(booking);
 
       notifyListeners();
@@ -126,6 +120,8 @@ class AppModel extends Model {
     summaryScreenModel.setBooking(booking);
     setScreen(Screen.SummaryErrorScreen);
     notifyListeners();
+
+    // mapState.testZoomAndArea();
 
     // todo: feed booking to the next screen
   }
@@ -155,8 +151,14 @@ class AppModel extends Model {
     mapState.placeDropoffPointMarker(marker);
 
     dropoffMarkerOpacity = 0.0;
-    mapState.zoomOutAndViewRoute(
-        bookScreenModel.pickupPoint, bookScreenModel.dropoffPoint);
+    booking = Booking(
+        pickupPoint: bookScreenModel.pickupPoint,
+        pickupPlace: bookScreenModel.pickupPlace,
+        dropoffPoint: bookScreenModel.dropoffPoint,
+        dropoffPlace: bookScreenModel.dropoffPlace,
+        tripDuration: 404,
+        fromSample: false);
+    mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
     notifyListeners();
   }
 
@@ -219,41 +221,55 @@ class MapState {
     for (dynamic p in path) {
       pathPoints.add(LatLng(p['latitude'], p['longitude']));
     }
-    print(path);
-    print(pathPoints);
 
 //     pathPoints =
 // // print('taeil');
 //     print(temp);
   }
 
-  zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
-    if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
-        (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
-      double half =
-          (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
-
-      var centerLong;
-      if (pickupPoint.longitude.sign == 1.0) {
-        if (pickupPoint.longitude + half > 180) {
-          centerLong = -180 + (pickupPoint.longitude + half - 180);
-        }
-      } else {
-        if (dropoffPoint.longitude + half > 180) {
-          centerLong = -180 + (dropoffPoint.longitude + half - 180);
-        }
-      }
-
-      animMapController.move(
-          LatLng(
-              0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
-          14);
-    } else {
-      animMapController.move(
-          LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
-              0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
-          14);
+  testZoomAndArea() {
+    for (double i = 0; i < 200; i++) {
+      printZoomAndArea(i);
     }
+  }
+
+  printZoomAndArea(double z) {
+    mapController.move(LatLng(10.0, 128.0), z);
+    print(
+        "${z}, ${(mapController.bounds.northEast.longitude - mapController.bounds.northWest.longitude).abs() * (mapController.bounds.northEast.latitude - mapController.bounds.southEast.latitude).abs()}");
+  }
+
+  zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
+    List<LatLng> bounds = [pickupPoint, dropoffPoint];
+    mapController.fitBounds(LatLngBounds.fromPoints(bounds),
+        options: FitBoundsOptions(padding: EdgeInsets.all(60)));
+
+    // if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
+    //     (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
+    //   double half =
+    //       (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
+
+    //   var centerLong;
+    //   if (pickupPoint.longitude.sign == 1.0) {
+    //     if (pickupPoint.longitude + half > 180) {
+    //       centerLong = -180 + (pickupPoint.longitude + half - 180);
+    //     }
+    //   } else {
+    //     if (dropoffPoint.longitude + half > 180) {
+    //       centerLong = -180 + (dropoffPoint.longitude + half - 180);
+    //     }
+    //   }
+
+    //   animMapController.move(
+    //       LatLng(
+    //           0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
+    //       14);
+    // } else {
+    //   animMapController.move(
+    //       LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
+    //           0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
+    //       14);
+    // }
   }
 }
 

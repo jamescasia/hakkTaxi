@@ -178,8 +178,8 @@ bookFrame(AppModel appModel, UniqueKey key) {
                     } else if (bookScreenModel.bookingState ==
                         BookingState.NotBooked) {
                       appModel.mapStateAddNewMarkers(
-                          pathPickupMarker(bookScreenModel.pickupPoint),
-                          pathDropoffMarker(bookScreenModel.dropoffPoint));
+                          pathPickupMarker(appModel.booking.pickupPoint),
+                          pathDropoffMarker(appModel.booking.dropoffPoint));
                     }
 
                     appModel.bookScreenPressBookButton();
