@@ -21,12 +21,13 @@ class AppModel extends Model {
   SummaryScreenModel summaryScreenModel;
   SummaryErrorScreenModel summaryErrorScreenModel;
   int i = 0;
-
+  double dropoffMarkerOpacity = 0;
   Location location = new Location();
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
   LocationData _locationData;
   MapState mapState = MapState();
+  Booking booking;
 
   AppModel() {
     appData = AppData();
@@ -34,6 +35,7 @@ class AppModel extends Model {
     bookScreenModel = BookScreenModel();
     summaryScreenModel = SummaryScreenModel();
     summaryErrorScreenModel = SummaryErrorScreenModel();
+
     requestPermission();
   }
 
@@ -117,11 +119,12 @@ class AppModel extends Model {
     mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
     await mapState.placePathBetweenPickupAndDropoff(
         booking.pickupPoint, booking.dropoffPoint);
+    mapState.replaceMarkers();
 
     notifyListeners();
     await bookScreenModel.manualBook(booking);
     summaryScreenModel.setBooking(booking);
-    setScreen(Screen.SummaryScreen);
+    setScreen(Screen.SummaryErrorScreen);
     notifyListeners();
 
     // todo: feed booking to the next screen
@@ -138,14 +141,28 @@ class AppModel extends Model {
     notifyListeners();
   }
 
-  void mapStatePlacePickupPointMarker(Marker marker) {
+  void mapStatePlacePickupPointMarker(Marker marker) async {
     mapState.placePickupPointMarker(marker);
+
+    notifyListeners();
+
+    await Future.delayed(Duration(milliseconds: 800));
+    dropoffMarkerOpacity = 1.0;
     notifyListeners();
   }
 
   void mapStatePlaceDropoffPointMarker(Marker marker) {
     mapState.placeDropoffPointMarker(marker);
+
+    dropoffMarkerOpacity = 0.0;
+    mapState.zoomOutAndViewRoute(
+        bookScreenModel.pickupPoint, bookScreenModel.dropoffPoint);
     notifyListeners();
+  }
+
+  void mapStateAddNewMarkers(Marker pmarker, Marker dmarker) {
+    mapState.addNewMarkers(pmarker, dmarker);
+    // notifyListeners();
   }
 }
 
@@ -158,10 +175,12 @@ class MapState {
   Key key = UniqueKey();
   List<Marker> markers = [];
   List<LatLng> pathPoints = [];
+  List<Marker> newMarkers = [];
   AnimatedMapController animMapController;
   MapController mapController = MapController();
   initialize() {
     markers = [];
+    newMarkers = [];
     pathPoints = [];
     setCurrentFocus(currentUserLocation);
   }
@@ -183,6 +202,15 @@ class MapState {
     // key = UniqueKey();
   }
 
+  addNewMarkers(Marker pmarker, Marker dmarker) {
+    newMarkers.add(pmarker);
+    newMarkers.add(dmarker);
+  }
+
+  replaceMarkers() {
+    markers = newMarkers;
+  }
+
   placePathBetweenPickupAndDropoff(LatLng pickup, LatLng dropoff) async {
     var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
     // print(res);
@@ -199,13 +227,33 @@ class MapState {
 //     print(temp);
   }
 
-  
-
   zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
-    animMapController.move(
-        LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
-            0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
-        14);
+    if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
+        (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
+      double half =
+          (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
+
+      var centerLong;
+      if (pickupPoint.longitude.sign == 1.0) {
+        if (pickupPoint.longitude + half > 180) {
+          centerLong = -180 + (pickupPoint.longitude + half - 180);
+        }
+      } else {
+        if (dropoffPoint.longitude + half > 180) {
+          centerLong = -180 + (dropoffPoint.longitude + half - 180);
+        }
+      }
+
+      animMapController.move(
+          LatLng(
+              0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
+          14);
+    } else {
+      animMapController.move(
+          LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
+              0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
+          14);
+    }
   }
 }
 

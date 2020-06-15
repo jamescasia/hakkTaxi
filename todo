@@ -1,4 +1,4 @@
-1. fix text box overflow
-2. move camera animation
-3. moving car animation
-4. transition to summaryScreen
+1. moving car animation
+1.4. proper zooming and centering
+1.5. move a little bit up on enter summmary screen
+2. supply data to summaryScreen{}

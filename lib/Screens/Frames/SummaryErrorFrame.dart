@@ -153,7 +153,8 @@ summaryErrorFrame(AppModel appModel) {
                         width: Globals.dwidth * 53,
                         height: Globals.dwidth * 53,
                         color: Colors.black,
-                        child: Image.asset("assets/images/driver.jpeg",fit:BoxFit.cover),
+                        child: Image.asset("assets/images/driver.jpeg",
+                            fit: BoxFit.cover),
                       )),
                   SizedBox(
                     width: Globals.dwidth * 10,
@@ -193,6 +194,7 @@ summaryErrorFrame(AppModel appModel) {
           child: MaterialButton(
             elevation: 1,
             onPressed: () {
+              appModel.bookScreenInitialize();
               appModel.setScreen(Screen.BookScreen);
             },
             color: Colors.blue,

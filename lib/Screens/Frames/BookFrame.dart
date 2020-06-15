@@ -175,6 +175,11 @@ bookFrame(AppModel appModel, UniqueKey key) {
                         BookingState.PickingDropoffPoint) {
                       appModel.mapStatePlaceDropoffPointMarker(
                           dropoffMarkerWidget(bookScreenModel.dropoffPoint));
+                    } else if (bookScreenModel.bookingState ==
+                        BookingState.NotBooked) {
+                      appModel.mapStateAddNewMarkers(
+                          pathPickupMarker(bookScreenModel.pickupPoint),
+                          pathDropoffMarker(bookScreenModel.dropoffPoint));
                     }
 
                     appModel.bookScreenPressBookButton();
@@ -278,89 +283,186 @@ bookScreenButtonText(BookingState bookingState) {
 
 pickupMarkerWidget(LatLng pickupPoint) {
   return new Marker(
+    anchorPos: AnchorPos.align(AnchorAlign.top),
     point: pickupPoint,
     builder: (ctx) => Container(
-      height: 30,
-      child: Stack(
-        children: <Widget>[
-          // Center(
-          //   child: Container(
-          //       width: 4,
-          //       height: 50,
-          //       decoration: BoxDecoration(
-          //           color: Colors.red,
-          //           borderRadius: BorderRadius.all(Radius.circular(300)))),
-          // ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.center,
+        // height: 30,
+        child: Transform.scale(
+      scale: 1.23,
+      child: Container(
+        height: 30,
+        child: Stack(
+          children: <Widget>[
+            Center(
               child: Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(0, -1),
-                      end: Alignment(0, 1),
-                      colors: [
-                        Globals.pickerUIRedStart,
-                        Globals.pickerUIYellowEnd,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(300))),
+                  width: 4,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(300)))),
+            ),
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: 19,
+                  height: 19,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(300))),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    )
+
+        //  Stack(
+        //   children: <Widget>[
+        //     // Center(
+        //     //   child: Container(
+        //     //       width: 4,
+        //     //       height: 50,
+        //     //       decoration: BoxDecoration(
+        //     //           color: Colors.red,
+        //     //           borderRadius: BorderRadius.all(Radius.circular(300)))),
+        //     // ),
+        //     Positioned.fill(
+        //       child: Align(
+        //         alignment: Alignment.center,
+        //         child: Container(
+        //           width: 26,
+        //           height: 26,
+        //           decoration: BoxDecoration(
+        //               gradient: LinearGradient(
+        //                 begin: Alignment(0, -1),
+        //                 end: Alignment(0, 1),
+        //                 colors: [
+        //                   Globals.pickerUIRedStart,
+        //                   Globals.pickerUIYellowEnd,
+        //                 ],
+        //               ),
+        //               borderRadius: BorderRadius.all(Radius.circular(300))),
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        ),
+  );
+}
+
+pathPickupMarker(LatLng pickupPoint) {
+  return new Marker(
+    point: pickupPoint,
+    builder: (context) => Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: 23,
+              height: 23,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment(0, -1),
+                    end: Alignment(0, 1),
+                    colors: [
+                      Globals.pickerUIRedStart,
+                      Globals.pickerUIYellowEnd,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(300))),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+pathDropoffMarker(LatLng dropoffPoint) {
+  return new Marker(
+    point: dropoffPoint,
+    builder: (context) => Stack(
+      children: <Widget>[
+        // Center(
+        //   child: Container(
+        //       width: 4,
+        //       height: 50,
+        //       decoration: BoxDecoration(
+        //           color: Colors.red,
+        //           borderRadius: BorderRadius.all(Radius.circular(300)))),
+        // ),
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: 23,
+              height: 23,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment(0, -1),
+                    end: Alignment(0, 1),
+                    colors: [
+                      Globals.bgBlue,
+                      Globals.accentBlue,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(300))),
+            ),
+          ),
+        ),
+        Center(
+          child: Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(300))),
+          ),
+        ),
+      ],
     ),
   );
 }
 
 dropoffMarkerWidget(LatLng dropoffPoint) {
   return new Marker(
+    anchorPos: AnchorPos.align(AnchorAlign.top),
     point: dropoffPoint,
     builder: (ctx) => Container(
-      height: 30,
-      child: Stack(
-        children: <Widget>[
-          // Center(
-          //   child: Container(
-          //       width: 4,
-          //       height: 50,
-          //       decoration: BoxDecoration(
-          //           color: Colors.red,
-          //           borderRadius: BorderRadius.all(Radius.circular(300)))),
-          // ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.center,
+        // height: 30,
+        child: Transform.scale(
+      scale: 1.23,
+      child: Container(
+        height: 30,
+        child: Stack(
+          children: <Widget>[
+            Center(
               child: Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(0, -1),
-                      end: Alignment(0, 1),
-                      colors: [
-                        Globals.bgBlue,
-                        Globals.accentBlue,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(300))),
+                  width: 4,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(300)))),
+            ),
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: 19,
+                  height: 19,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(300))),
+                ),
               ),
             ),
-          ),
-          Center(
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(300))),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
+    )),
   );
 }
