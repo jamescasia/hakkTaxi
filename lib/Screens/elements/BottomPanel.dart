@@ -116,7 +116,7 @@ class _BottomPanelState extends State<BottomPanel>
                       key: appModel.mapState.key,
                       options: new MapOptions(
                         center: appModel.mapState.currentFocus,
-                        zoom: appModel.mapState.currentZoom,
+                        zoom: appModel.mapState.currentZoom, 
                         onPositionChanged: (position, hasGesture) {
                           if (appModel.curScreen == Screen.BookScreen) {
                             if (appModel.bookScreenModel.bookingState ==

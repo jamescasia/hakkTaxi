@@ -56,18 +56,22 @@ class AppModel extends Model {
         return;
       }
 
-      setInitialMapFocus();
+      await updateCurrentLocationCoordinates();
     } else {
-      setInitialMapFocus();
+      await updateCurrentLocationCoordinates();
     }
+    bookScreenInitialize();
   }
 
-  setInitialMapFocus() async {
-    print("Getting current Loc");
-    setCurrentFocus(await getCurrentLocationCoordinates());
-  }
+  // setInitialMapFocus() async {
+  //   print("Getting current Loc");
+  //   var pos = await updateCurrentLocationCoordinates();
+  //   bookScreenModel.showCurrentLatLngPickup(pos);
+  //   bookScreenModel.showCurrentPlacePickup();
+  //   mapStateSetCurrentFocus(pos);
+  // }
 
-  getCurrentLocationCoordinates() async {
+  updateCurrentLocationCoordinates() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -76,21 +80,19 @@ class AppModel extends Model {
       }
     }
     _locationData = await location.getLocation();
-    print(_locationData);
-    return LatLng(_locationData.latitude, _locationData.longitude);
+    mapState.currentUserLocation =
+        LatLng(_locationData.latitude, _locationData.longitude);
   }
 
-  void setCurrentFocus(LatLng latlng) async {
-    mapState.currentFocus = latlng;
-    mapState.key = UniqueKey();
-    notifyListeners();
+  void mapStateSetCurrentFocus(LatLng latlng) async {
+    mapState.setCurrentFocus(latlng);
   }
 
-  void setCurrentZoom(double z) {
-    mapState.currentZoom = z;
-    mapState.key = UniqueKey();
-    notifyListeners();
-  }
+  // void setCurrentZoom(double z) {
+  //   mapState.currentZoom = z;
+  //   mapState.key = UniqueKey();
+  //   notifyListeners();
+  // }
 
   void bookScreenManualBook(Booking booking) async {
     mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
@@ -122,8 +124,11 @@ class AppModel extends Model {
   void bookScreenSelectBook() {}
 
   void bookScreenInitialize() {
-    mapState.markers = [];
+    mapState.initialize();
     bookScreenModel.initialize();
+
+    bookScreenModel.showCurrentLatLngPickup(mapState.currentUserLocation);
+    bookScreenModel.showCurrentPlacePickup();
     notifyListeners();
   }
 
@@ -141,11 +146,23 @@ class AppModel extends Model {
 class MapState {
   LatLng defaultFocus = LatLng(-6.235, 106.858);
   LatLng currentFocus = LatLng(-6.235, 106.858);
-  double currentZoom = 14.5;
+
+  LatLng currentUserLocation = LatLng(-6.235, 106.858);
+  double currentZoom = 12;
   Key key = UniqueKey();
   List<Marker> markers = [];
 
   MapController mapController = MapController();
+  initialize() {
+    markers = [];
+    setCurrentFocus(currentUserLocation);
+  }
+
+  setCurrentFocus(LatLng pos) {
+    currentFocus = pos;
+    mapController.move(currentFocus, currentZoom);
+  }
+
   placePickupPointMarker(Marker marker) {
     // markers[0] = marker;
     markers.add(marker);
