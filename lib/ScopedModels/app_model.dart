@@ -80,6 +80,8 @@ class AppModel extends Model {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
+        mapState.currentUserLocation = mapState.defaultFocus;
+
         return mapState.defaultFocus;
       }
     }
@@ -214,14 +216,17 @@ class MapState {
   }
 
   placePathBetweenPickupAndDropoff(LatLng pickup, LatLng dropoff) async {
-    var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
-    // print(res);
+    try {
+      var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
+      // print(res);
 
-    var path = res['routes'][0]['legs'][0]['points'];
-    for (dynamic p in path) {
-      pathPoints.add(LatLng(p['latitude'], p['longitude']));
+      var path = res['routes'][0]['legs'][0]['points'];
+      for (dynamic p in path) {
+        pathPoints.add(LatLng(p['latitude'], p['longitude']));
+      }
+    } catch (e) {
+      pathPoints = [];
     }
-
 //     pathPoints =
 // // print('taeil');
 //     print(temp);
