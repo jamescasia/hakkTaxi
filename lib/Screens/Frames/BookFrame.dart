@@ -171,8 +171,11 @@ bookFrame(AppModel appModel, UniqueKey key) {
                       print("added pickup");
                       appModel.mapStatePlacePickupPointMarker(
                           pickupMarkerWidget(bookScreenModel.pickupPoint));
+
+                      appModel.bookScreenPressBookButton();
                     } else if (bookScreenModel.bookingState ==
                         BookingState.PickingDropoffPoint) {
+                      appModel.bookScreenPressBookButton();
                       appModel.mapStatePlaceDropoffPointMarker(
                           dropoffMarkerWidget(bookScreenModel.dropoffPoint));
                     } else if (bookScreenModel.bookingState ==
@@ -180,9 +183,10 @@ bookFrame(AppModel appModel, UniqueKey key) {
                       appModel.mapStateAddNewMarkers(
                           pathPickupMarker(appModel.booking.pickupPoint),
                           pathDropoffMarker(appModel.booking.dropoffPoint));
-                    }
 
-                    appModel.bookScreenPressBookButton();
+                      appModel.bookScreenPressBookButton();
+                    } else
+                      appModel.bookScreenPressBookButton();
                   },
                   color: Colors.blue,
                   splashColor: Colors.blue,

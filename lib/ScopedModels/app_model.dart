@@ -112,7 +112,10 @@ class AppModel extends Model {
   }
 
   void bookScreenManualBook(Booking booking) async {
-    mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+    var target =
+        mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+
+    mapState.animMapController.move(target.center, target.zoom);
     await mapState.placePathBetweenPickupAndDropoff(
         booking.pickupPoint, booking.dropoffPoint);
     mapState.replaceMarkers();
@@ -120,7 +123,13 @@ class AppModel extends Model {
     notifyListeners();
     await bookScreenModel.manualBook(booking);
     summaryScreenModel.setBooking(booking);
-    setScreen(Screen.SummaryErrorScreen);
+    setScreen(Screen.SummaryScreen);
+
+    mapState.zoomOutSummaryScreen(booking.pickupPoint, booking.dropoffPoint);
+
+    // mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+    // // mapState.mapController.zoom -= 2;
+    // mapState.mapController.move(LatLng, mapState.mapController.zoom -2);
     notifyListeners();
 
     // mapState.testZoomAndArea();
@@ -160,7 +169,12 @@ class AppModel extends Model {
         dropoffPlace: bookScreenModel.dropoffPlace,
         tripDuration: 404,
         fromSample: false);
-    mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+    // mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+
+    var target =
+        mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+
+    mapState.animMapController.move(target.center, target.zoom);
     notifyListeners();
   }
 
@@ -244,10 +258,103 @@ class MapState {
         "${z}, ${(mapController.bounds.northEast.longitude - mapController.bounds.northWest.longitude).abs() * (mapController.bounds.northEast.latitude - mapController.bounds.southEast.latitude).abs()}");
   }
 
+  zoomOutSummaryErroScreen(LatLng pickupPoint, LatLng dropoffPoint) {
+    if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
+        (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
+      double half =
+          (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
+
+      var centerLong;
+      if (pickupPoint.longitude.sign == 1.0) {
+        if (pickupPoint.longitude + half > 180) {
+          centerLong = -180 + (pickupPoint.longitude + half - 180);
+        }
+      } else {
+        if (dropoffPoint.longitude + half > 180) {
+          centerLong = -180 + (dropoffPoint.longitude + half - 180);
+        }
+      }
+
+      animMapController.move(
+          LatLng(
+              0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
+          mapController.zoom - -1.6);
+    } else {
+      animMapController.move(
+          LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
+              0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
+          mapController.zoom - 1.6);
+    }
+  }
+
+  zoomOutSummaryErrorScreen(LatLng pickupPoint, LatLng dropoffPoint) {
+    if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
+        (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
+      double half =
+          (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
+
+      var centerLong;
+      if (pickupPoint.longitude.sign == 1.0) {
+        if (pickupPoint.longitude + half > 180) {
+          centerLong = -180 + (pickupPoint.longitude + half - 180);
+        }
+      } else {
+        if (dropoffPoint.longitude + half > 180) {
+          centerLong = -180 + (dropoffPoint.longitude + half - 180);
+        }
+      }
+
+      animMapController.move(
+          LatLng(
+              0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
+          mapController.zoom - 2);
+    } else {
+      animMapController.move(
+          LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
+              0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
+          mapController.zoom - 2);
+    }
+  }
+
+  zoomOutSummaryScreen(LatLng pickupPoint, LatLng dropoffPoint) {
+    if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
+        (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
+      double half =
+          (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
+
+      var centerLong;
+      if (pickupPoint.longitude.sign == 1.0) {
+        if (pickupPoint.longitude + half > 180) {
+          centerLong = -180 + (pickupPoint.longitude + half - 180);
+        }
+      } else {
+        if (dropoffPoint.longitude + half > 180) {
+          centerLong = -180 + (dropoffPoint.longitude + half - 180);
+        }
+      }
+
+      animMapController.move(
+          LatLng(
+              0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
+          mapController.zoom - 1);
+    } else {
+      animMapController.move(
+          LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
+              0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
+          mapController.zoom - 1);
+    }
+  }
+
   zoomOutAndViewRoute(LatLng pickupPoint, LatLng dropoffPoint) {
     List<LatLng> bounds = [pickupPoint, dropoffPoint];
-    mapController.fitBounds(LatLngBounds.fromPoints(bounds),
-        options: FitBoundsOptions(padding: EdgeInsets.all(60)));
+    return mapController.fitBounds(LatLngBounds.fromPoints(bounds),
+        options: FitBoundsOptions(
+            padding: EdgeInsets.only(
+          bottom: 110,
+          left: 60,
+          top: 90,
+          right: 60,
+        )));
 
     // if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
     //     (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {

@@ -62,7 +62,12 @@ class _BottomPanelState extends State<BottomPanel>
         child: Stack(
           children: <Widget>[
             Container(
-              height: Globals.height * 0.7,
+              height: Globals.height *
+                  (appModel.curScreen == Screen.SummaryScreen
+                      ? 0.56
+                      : appModel.curScreen == Screen.SummaryErrorScreen
+                          ? 0.34
+                          : 0.7),
               child: Stack(
                 children: <Widget>[
                   Listener(

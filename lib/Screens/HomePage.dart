@@ -26,6 +26,10 @@ class _GrabAppState extends State<GrabApp> {
         systemNavigationBarColor: Globals.bgBlue.withAlpha(0)
         // #61C350
         ));
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return ScopedModel<AppModel>(
       model: AppModel(),
       child:
