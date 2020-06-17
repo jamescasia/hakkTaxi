@@ -53,111 +53,118 @@ class _DataPointCardState extends State<DataPointCard> {
   _DataPointCardState(this.dataPoint, this.appModel);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-          top: Globals.dheight * 14,
-          bottom: dataPoint.order == appModel.appData.dataPoints.length - 1
-              ? Globals.dheight * 14
-              : 0),
-      child: Material(
-        elevation: 3,
-        shadowColor: Colors.black26,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(28))),
-        child: InkWell(
-          onTap: () {
-            // appModel.selectBook(dataPoint);
-          },
-          child: Container(
-            width: Globals.width * 0.9,
-            height: Globals.dheight * 80,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(28))),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Pickup",
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Globals.h3text)),
-                      Text(dataPoint.pickupLat.toString(),
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Globals.bgBlue)),
-                      Text(dataPoint.pickupLong.toString(),
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Globals.bgBlue)),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Dropoff",
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Globals.h3text)),
-                      Text(dataPoint.dropoffLat.toString(),
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Globals.bgBlue)),
-                      Text(dataPoint.dropoffLong.toString(),
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Globals.bgBlue)),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Duration",
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Globals.h3text)),
-                      Text(dataPoint.duration.toString(),
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Globals.bgBlue)),
-                      Text('',
-                          style: TextStyle(
-                              fontFamily: "Lato",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Globals.bgBlue)),
-                    ],
-                  ),
-                ],
+    return ScopedModelDescendant<AppModel>(
+        builder: (context, snapshot, appModel) {
+      return Container(
+        margin: EdgeInsets.only(
+            top: Globals.dheight * 14,
+            bottom: dataPoint.order == appModel.appData.dataPoints.length - 1
+                ? Globals.dheight * 14
+                : 0),
+        child: Material(
+          elevation: 3,
+          shadowColor: Colors.black26,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(28))),
+          child: InkWell(
+            onTap: () {
+
+              appModel.bookScreenInitialize(); 
+              appModel.selectBookingFromDataset(dataPoint);
+              appModel.setScreen(Screen.BookScreen);
+              // appModel.selectBook(dataPoint);
+            },
+            child: Container(
+              width: Globals.width * 0.9,
+              height: Globals.dheight * 80,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(28))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Pickup",
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Globals.h3text)),
+                        Text(dataPoint.pickupLat.toString(),
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Globals.bgBlue)),
+                        Text(dataPoint.pickupLong.toString(),
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Globals.bgBlue)),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Dropoff",
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Globals.h3text)),
+                        Text(dataPoint.dropoffLat.toString(),
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Globals.bgBlue)),
+                        Text(dataPoint.dropoffLong.toString(),
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Globals.bgBlue)),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Duration",
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Globals.h3text)),
+                        Text(dataPoint.duration.toString(),
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Globals.bgBlue)),
+                        Text('',
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Globals.bgBlue)),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

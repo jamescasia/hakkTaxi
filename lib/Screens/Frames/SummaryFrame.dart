@@ -165,7 +165,7 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Sam Sepiol",
+                      Text("Dolores Haze",
                           style: TextStyle(
                               fontFamily: "Lato",
                               fontSize: 15,

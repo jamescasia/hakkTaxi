@@ -8,7 +8,9 @@ class Booking {
   Duration tripDuration = Duration(seconds: 0);
   double distance = 0.0;
   bool fromSample = false;
-  DateTime day = DateTime.now();
+  int hourOfDay;
+  int dayOfWeek;
+
 
   Duration realDuration = Duration(seconds: 0);
   Booking(

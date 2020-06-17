@@ -2,6 +2,7 @@ import 'package:grabApp/DataModels/AppRequests.dart';
 import 'package:grabApp/DataModels/Booking.dart';
 import 'package:grabApp/DataModels/DataPoint.dart';
 import 'package:grabApp/ScopedModels/bookscreen_model.dart';
+import 'package:grabApp/Screens/Frames/BookFrame.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:grabApp/DataModels/Screens.dart';
 import 'package:grabApp/DataModels/AppData.dart';
@@ -102,7 +103,10 @@ class AppModel extends Model {
 
   void bookScreenPressBookButton() async {
     if (bookScreenModel.bookingState == BookingState.NotBooked) {
-      bookScreenManualBook(booking);
+      if (booking.fromSample)
+        bookScreenSelectBook();
+      else
+        bookScreenManualBook(booking);
 
       notifyListeners();
     } else {
@@ -133,6 +137,31 @@ class AppModel extends Model {
 
     booking.distance = dist;
 
+    print(pathPoints);
+
+    return pathPoints;
+  }
+
+  getShortestPathSelect(LatLng pickup, LatLng dropoff) async {
+    List<LatLng> pathPoints = [];
+    double dist = 123;
+    try {
+      var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
+      // print(res);
+
+      var path = res['routes'][0]['legs'][0]['points'];
+      dist = res['routes'][0]['legs'][0]['summary']['lengthInMeters'] / 1000.0;
+
+      print(res);
+      for (dynamic p in path) {
+        pathPoints.add(LatLng(p['latitude'], p['longitude']));
+      }
+    } catch (e) {
+      print(e);
+      pathPoints = [];
+      dist = 0.0;
+    }
+    booking.distance = dist;
     print(pathPoints);
 
     return pathPoints;
@@ -176,7 +205,66 @@ class AppModel extends Model {
     // todo: feed booking to the next screen
   }
 
-  void bookScreenSelectBook() {}
+  void selectBookingFromDataset(DataPoint dataPoint) async {
+    bookScreenModel.bookingState = BookingState.NotBooked;
+
+    var pickupPoint = LatLng(dataPoint.pickupLat, dataPoint.pickupLong);
+    var dropoffPoint = LatLng(dataPoint.dropoffLat, dataPoint.dropoffLong);
+
+    booking = Booking(
+      pickupPoint: pickupPoint,
+      dropoffPoint: dropoffPoint,
+      fromSample: true,
+    );
+
+    booking.dayOfWeek = dataPoint.dayOfWeek;
+    booking.hourOfDay = dataPoint.hourOfDay;
+    booking.realDuration = Duration(seconds: dataPoint.duration.toInt());
+
+    bookScreenModel.dropoffFieldText =
+        ((await AppRequests.getAddressFromLatLng(dropoffPoint))['addresses'][0]
+            ['address']['freeformAddress']);
+
+    bookScreenModel.pickupFieldText =
+        ((await AppRequests.getAddressFromLatLng(pickupPoint))['addresses'][0]
+            ['address']['freeformAddress']);
+
+    booking.dropoffPlace = bookScreenModel.dropoffFieldText;
+    booking.pickupPlace = bookScreenModel.pickupFieldText;
+    bookScreenModel.notifyListeners();
+    mapStatePlacePickupPointMarker(pickupMarkerWidget(pickupPoint));
+    selectMapStatePlaceDropoffPointMarker(dropoffMarkerWidget(dropoffPoint));
+    mapState.placePathBetweenPickupAndDropoff(
+        await getShortestPathSelect(booking.pickupPoint, booking.dropoffPoint));
+    mapStateAddNewMarkers(
+        pathPickupMarker(pickupPoint), pathDropoffMarker(dropoffPoint));
+    mapState.replaceMarkers();
+    notifyListeners();
+    var target =
+        mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
+
+    mapState.animMapController.move(target.center, target.zoom);
+
+    // add marrrrkers
+    // add rrroads
+    // zoom in
+    //
+  }
+
+  void bookScreenSelectBook() async {
+    bookScreenModel.bookingState = BookingState.Driving;
+    notifyListeners();
+    try {
+      booking.tripDuration =
+          Duration(seconds: await AppRequests.getETA(booking));
+    } catch (e) {
+      booking.tripDuration = Duration(seconds: 0);
+    }
+    setScreen(Screen.SummaryErrorScreen);
+
+    // set booking  eta
+    // set booking pickkupPlace, dropoffPlace
+  }
 
   void bookScreenInitialize() {
     mapState.initialize();
@@ -197,6 +285,12 @@ class AppModel extends Model {
     notifyListeners();
   }
 
+  void selectMapStatePlaceDropoffPointMarker(Marker marker) {
+    mapState.placeDropoffPointMarker(marker);
+
+    notifyListeners();
+  }
+
   void mapStatePlaceDropoffPointMarker(Marker marker) {
     mapState.placeDropoffPointMarker(marker);
 
@@ -207,6 +301,9 @@ class AppModel extends Model {
         dropoffPoint: bookScreenModel.dropoffPoint,
         dropoffPlace: bookScreenModel.dropoffPlace,
         fromSample: false);
+    var now = DateTime.now();
+    booking.dayOfWeek = now.weekday;
+    booking.hourOfDay = now.hour;
 
     // mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
 
@@ -268,7 +365,7 @@ class MapState {
     markers = newMarkers;
   }
 
-  placePathBetweenPickupAndDropoff(List<LatLng> p) async {
+  placePathBetweenPickupAndDropoff(List<LatLng> p) {
     pathPoints = p;
 
 //     pathPoints =
