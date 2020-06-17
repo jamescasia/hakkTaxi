@@ -42,7 +42,9 @@ summaryErrorFrame(AppModel appModel) {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    predictedDurationCard("01:28:32", UniqueKey()),
+                    predictedDurationCard(
+                        "${appModel.booking.tripDuration.inHours}:${appModel.booking.tripDuration.inMinutes.remainder(60)}:${(appModel.booking.tripDuration.inSeconds.remainder(60))}",
+                        UniqueKey()),
                     errorCircle(0.412, UniqueKey()),
                   ],
                 ),
@@ -53,8 +55,11 @@ summaryErrorFrame(AppModel appModel) {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    realDurationCard("01:28:32", UniqueKey()),
-                    distanceCard("42.3", UniqueKey()),
+                    realDurationCard(
+                        "${appModel.booking.realDuration.inHours}:${appModel.booking.realDuration.inMinutes.remainder(60)}:${(appModel.booking.realDuration.inSeconds.remainder(60))}",
+                        UniqueKey()),
+                    distanceCard(appModel.booking.distance.toStringAsFixed(1),
+                        UniqueKey()),
                   ],
                 ),
                 SizedBox(

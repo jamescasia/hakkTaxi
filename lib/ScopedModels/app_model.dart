@@ -139,6 +139,12 @@ class AppModel extends Model {
   }
 
   void bookScreenManualBook(Booking booking) async {
+    try {
+      booking.tripDuration =
+          Duration(seconds: await AppRequests.getETA(booking));
+    } catch (e) {
+      booking.tripDuration = Duration(seconds: 0);
+    }
     if (booking.pickupPlace == "")
       booking.pickupPlace = await bookScreenModel.getPlace(booking.pickupPoint);
     if (booking.dropoffPlace == "")
@@ -200,7 +206,6 @@ class AppModel extends Model {
         pickupPlace: bookScreenModel.pickupPlace,
         dropoffPoint: bookScreenModel.dropoffPoint,
         dropoffPlace: bookScreenModel.dropoffPlace,
-        tripDuration: 404,
         fromSample: false);
 
     // mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);

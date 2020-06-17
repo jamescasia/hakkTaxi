@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:grabApp/DataModels/AuthKeys.dart';
+import 'package:grabApp/DataModels/Booking.dart';
 import 'package:latlong/latlong.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,5 +20,10 @@ class AppRequests {
     return (json.decode((await http.get(
             'https://atlas.microsoft.com/route/directions/json?subscription-key=${AuthKeys.mapsAuthKey}&api-version=1.0&query=${orig.latitude}%2C${orig.longitude}%3A${des.latitude}%2C${des.longitude}'))
         .body));
+  }
+
+  static getETA(Booking booking) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    return 920;
   }
 }
