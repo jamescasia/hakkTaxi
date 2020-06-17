@@ -111,13 +111,46 @@ class AppModel extends Model {
     }
   }
 
+  getShortestPath(LatLng pickup, LatLng dropoff) async {
+    List<LatLng> pathPoints = [];
+    double dist = 123;
+    try {
+      var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
+      // print(res);
+
+      var path = res['routes'][0]['legs'][0]['points'];
+      dist = res['routes'][0]['legs'][0]['summary']['lengthInMeters'] / 1000.0;
+
+      print(res);
+      for (dynamic p in path) {
+        pathPoints.add(LatLng(p['latitude'], p['longitude']));
+      }
+    } catch (e) {
+      print(e);
+      pathPoints = [];
+      dist = 0.0;
+    }
+
+    booking.distance = dist;
+
+    print(pathPoints);
+
+    return pathPoints;
+  }
+
   void bookScreenManualBook(Booking booking) async {
+    if (booking.pickupPlace == "")
+      booking.pickupPlace = await bookScreenModel.getPlace(booking.pickupPoint);
+    if (booking.dropoffPlace == "")
+      booking.dropoffPlace =
+          await bookScreenModel.getPlace(booking.dropoffPoint);
     var target =
         mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
 
     mapState.animMapController.move(target.center, target.zoom);
+
     await mapState.placePathBetweenPickupAndDropoff(
-        booking.pickupPoint, booking.dropoffPoint);
+        await getShortestPath(booking.pickupPoint, booking.dropoffPoint));
     mapState.replaceMarkers();
 
     notifyListeners();
@@ -169,6 +202,7 @@ class AppModel extends Model {
         dropoffPlace: bookScreenModel.dropoffPlace,
         tripDuration: 404,
         fromSample: false);
+
     // mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
 
     var target =
@@ -229,18 +263,9 @@ class MapState {
     markers = newMarkers;
   }
 
-  placePathBetweenPickupAndDropoff(LatLng pickup, LatLng dropoff) async {
-    try {
-      var res = (await AppRequests.getPathBetweenPoints(pickup, dropoff));
-      // print(res);
+  placePathBetweenPickupAndDropoff(List<LatLng> p) async {
+    pathPoints = p;
 
-      var path = res['routes'][0]['legs'][0]['points'];
-      for (dynamic p in path) {
-        pathPoints.add(LatLng(p['latitude'], p['longitude']));
-      }
-    } catch (e) {
-      pathPoints = [];
-    }
 //     pathPoints =
 // // print('taeil');
 //     print(temp);

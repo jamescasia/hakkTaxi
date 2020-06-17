@@ -67,7 +67,11 @@ bookFrame(AppModel appModel, UniqueKey key) {
                                           child: Column(
                                             children: <Widget>[
                                               Text(
-                                                "Pickup",
+                                                bookScreenModel.pickupFieldText
+                                                            .length >=
+                                                        35
+                                                    ? ''
+                                                    : "Pickup",
                                                 textAlign: TextAlign.start,
                                                 style: TextStyle(
                                                     fontFamily: "Lato",
@@ -121,7 +125,11 @@ bookFrame(AppModel appModel, UniqueKey key) {
                                           child: Column(
                                             children: <Widget>[
                                               Text(
-                                                "Dropoff",
+                                                bookScreenModel.dropoffFieldText
+                                                            .length >=
+                                                        35
+                                                    ? ''
+                                                    : "Dropoff",
                                                 textAlign: TextAlign.start,
                                                 style: TextStyle(
                                                     fontFamily: "Lato",

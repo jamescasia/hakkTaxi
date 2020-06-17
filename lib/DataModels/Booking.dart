@@ -2,10 +2,11 @@ import 'package:latlong/latlong.dart';
 
 class Booking {
   LatLng pickupPoint;
-  String pickupPlace;
+  String pickupPlace = "";
   LatLng dropoffPoint;
-  String dropoffPlace;
-  double tripDuration;
+  String dropoffPlace = "";
+  double tripDuration = 0.0;
+  double distance = 0.0;
   bool fromSample = false;
 
   Booking(

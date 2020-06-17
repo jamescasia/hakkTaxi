@@ -4,7 +4,7 @@ import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:grabApp/DataModels/Globals.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grabApp/DataModels/Screens.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:grabApp/Screens/elements/PathWidget.dart';
 
 import 'package:grabApp/Screens/elements/DurationCard.dart';
@@ -40,14 +40,15 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     durationCard("01:28:32", UniqueKey()),
-                    distanceCard("42.3", UniqueKey()),
+                    distanceCard(appModel.booking.distance.toStringAsFixed(1),
+                        UniqueKey()),
                   ],
                 ),
                 SizedBox(
                   height: Globals.dheight * 18,
                 ),
                 Container(
-                  width: Globals.width * 0.82,
+                  width: Globals.width * 0.88,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -75,10 +76,13 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                                   SizedBox(
                                     height: Globals.dheight * 0.2,
                                   ),
-                                  Text("Kampoeng Makan Joglo 21",
+                                  AutoSizeText(appModel.booking.pickupPlace,
+                                  maxLines: 2,minFontSize: 10,
+
                                       style: TextStyle(
                                           fontFamily: "Lato",
-                                          fontSize: 20,
+                                          fontSize: 16,
+                                          
                                           fontWeight: FontWeight.w600,
                                           color: Globals.h1text.withAlpha(230)))
                                 ]),
@@ -101,10 +105,11 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                                   SizedBox(
                                     height: Globals.dheight * 0.2,
                                   ),
-                                  Text("Berkah Warung",
+                                  AutoSizeText(appModel.booking.dropoffPlace,
+                                  maxLines:2,
                                       style: TextStyle(
                                           fontFamily: "Lato",
-                                          fontSize: 20,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                           color: Globals.h1text.withAlpha(230)))
                                 ])
@@ -139,7 +144,8 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                         width: Globals.dwidth * 53,
                         height: Globals.dwidth * 53,
                         color: Colors.black,
-                        child: Image.asset("assets/images/driver.jpeg",fit:BoxFit.cover),
+                        child: Image.asset("assets/images/driver.jpeg",
+                            fit: BoxFit.cover),
                       )),
                   SizedBox(
                     width: Globals.dwidth * 10,

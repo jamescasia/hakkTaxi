@@ -7,7 +7,7 @@ import 'package:grabApp/ScopedModels/app_model.dart';
 import 'package:grabApp/DataModels/Globals.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grabApp/DataModels/Screens.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:grabApp/Screens/elements/PathWidget.dart';
 
 import 'package:grabApp/Screens/elements/DurationCard.dart';
