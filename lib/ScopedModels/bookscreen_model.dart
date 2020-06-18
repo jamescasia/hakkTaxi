@@ -52,7 +52,7 @@ class BookScreenModel extends Model {
     pickupPlace =
         ((await AppRequests.getAddressFromLatLng(currentCenter))['addresses'][0]
             ['address']['freeformAddress']);
-    if (pickupPlace == '') pickupPlace = "Invalid location";
+    if (pickupPlace == '' || pickupPlace == null) pickupPlace = "Invalid location";
     pickupFieldText = pickupPlace;
     notifyListeners();
   }
@@ -61,7 +61,7 @@ class BookScreenModel extends Model {
     var place =
         ((await AppRequests.getAddressFromLatLng(pos))['addresses'][0]
             ['address']['freeformAddress']);
-    if (place == '') place = "Invalid location";
+    if (place == ''|| place == null) place = "Invalid location";
 
     return place;
   }
@@ -71,7 +71,7 @@ class BookScreenModel extends Model {
     dropoffPlace =
         ((await AppRequests.getAddressFromLatLng(currentCenter))['addresses'][0]
             ['address']['freeformAddress']);
-    if (dropoffPlace == '') dropoffPlace = "Invalid location";
+    if (dropoffPlace == ''|| dropoffPlace == null) dropoffPlace = "Invalid location";
     dropoffFieldText = dropoffPlace;
     notifyListeners();
   }

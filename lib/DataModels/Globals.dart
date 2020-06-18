@@ -27,28 +27,32 @@ class Globals {
   static Color bh2text = Color(0xffA1A1A1);
   static Color badOrange = Color(0xffE26515);
   static Color goodGreen = Color(0xff0BC92B);
-
-
 }
-  frontPanelSize(Screen currentScreen) {
-    if (currentScreen == Screen.BookScreen)
-      return Globals.height * 0.255;
-    else if (currentScreen == Screen.SelectScreen)
-      return Globals.height * 0.815;
-    else if (currentScreen == Screen.SummaryScreen)
-      return Globals.height * 0.425;
-    else if (currentScreen == Screen.SummaryErrorScreen)
-      return Globals.height * 0.6;
-  }
 
-  backPanelSize(Screen currentScreen) {
-    double pad = 0.095;
-    if (currentScreen == Screen.BookScreen)
-      return Globals.height * (0.255 + pad);
-    else if (currentScreen == Screen.SelectScreen)
-      return Globals.height * (0.815 + pad);
-    else if (currentScreen == Screen.SummaryScreen)
-      return Globals.height * (0.425 + pad);
-    else if (currentScreen == Screen.SummaryErrorScreen)
-      return Globals.height * (0.6 + pad);
-  }
+frontPanelSize(Screen currentScreen) {
+  if (currentScreen == Screen.BookScreen)
+    return Globals.height * 0.255;
+  else if (currentScreen == Screen.SelectScreen)
+    return Globals.height * 0.815;
+  else if (currentScreen == Screen.SummaryScreen)
+    return Globals.height * 0.425;
+  else if (currentScreen == Screen.SummaryErrorScreen)
+    return Globals.height * 0.6;
+}
+
+backPanelSize(Screen currentScreen) {
+  double pad = 0.095;
+  if (currentScreen == Screen.BookScreen)
+    return Globals.height * (0.255 + pad);
+  else if (currentScreen == Screen.SelectScreen)
+    return Globals.height * (0.815 + pad);
+  else if (currentScreen == Screen.SummaryScreen)
+    return Globals.height * (0.425 + pad);
+  else if (currentScreen == Screen.SummaryErrorScreen)
+    return Globals.height * (0.6 + pad);
+}
+
+String twoDigits(int n) {
+  if (n >= 10) return "$n";
+  return "0$n";
+}

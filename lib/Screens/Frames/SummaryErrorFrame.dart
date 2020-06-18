@@ -32,7 +32,7 @@ summaryErrorFrame(AppModel appModel) {
         ),
       ),
       Positioned.fill(
-          top: Globals.dheight * 42,
+          top: Globals.dheight * 38,
           child: Align(
             alignment: Alignment.topCenter,
             child: Column(
@@ -43,7 +43,7 @@ summaryErrorFrame(AppModel appModel) {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     predictedDurationCard(
-                        "${appModel.booking.tripDuration.inHours}:${appModel.booking.tripDuration.inMinutes.remainder(60)}:${(appModel.booking.tripDuration.inSeconds.remainder(60))}",
+                        "${twoDigits(appModel.booking.tripDuration.inHours)}:${appModel.booking.tripDuration.inMinutes.remainder(60)}:${twoDigits(appModel.booking.tripDuration.inSeconds.remainder(60))}",
                         UniqueKey()),
                     errorCircle(0.412, UniqueKey()),
                   ],
@@ -56,14 +56,14 @@ summaryErrorFrame(AppModel appModel) {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     realDurationCard(
-                        "${appModel.booking.realDuration.inHours}:${appModel.booking.realDuration.inMinutes.remainder(60)}:${(appModel.booking.realDuration.inSeconds.remainder(60))}",
+                        "${twoDigits(appModel.booking.realDuration.inHours)}:${twoDigits(appModel.booking.realDuration.inMinutes.remainder(60))}:${twoDigits(appModel.booking.realDuration.inSeconds.remainder(60))}",
                         UniqueKey()),
                     distanceCard(appModel.booking.distance.toStringAsFixed(1),
                         UniqueKey()),
                   ],
                 ),
                 SizedBox(
-                  height: Globals.dheight * 18,
+                  height: Globals.dheight * 10,
                 ),
                 Container(
                   width: Globals.width * 0.82,
@@ -73,7 +73,7 @@ summaryErrorFrame(AppModel appModel) {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       pathWidget(),
-                      SizedBox(width: Globals.dwidth * 15),
+                      SizedBox(width: Globals.dwidth * 11),
                       Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,51 +82,80 @@ summaryErrorFrame(AppModel appModel) {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Pickup",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontFamily: "Lato",
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Globals.h3text),
-                                  ),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Pickup",
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              fontFamily: "Lato",
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: Globals.h3text),
+                                        ),
+                                        SizedBox(
+                                          height: Globals.dheight * 0.2,
+                                        ),
+                                        Container(
+                                          width: Globals.width * 0.7,
+                                          height: Globals.dheight * 34,
+                                          child: Center(
+                                            child: AutoSizeText(
+                                                appModel.booking.pickupPlace,
+                                                minFontSize: 10,
+                                                overflow: TextOverflow.visible,
+                                                style: TextStyle(
+                                                    fontFamily: "Lato",
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Globals.h1text
+                                                        .withAlpha(230))),
+                                          ),
+                                        )
+                                      ]),
                                   SizedBox(
-                                    height: Globals.dheight * 0.2,
+                                    height: Globals.dheight * 6,
                                   ),
-                                  Text("Kampoeng Makan Joglo 21",
-                                      style: TextStyle(
-                                          fontFamily: "Lato",
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600,
-                                          color: Globals.h1text.withAlpha(230)))
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Dropoff",
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              fontFamily: "Lato",
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: Globals.h3text),
+                                        ),
+                                        SizedBox(
+                                          height: Globals.dheight * 0.2,
+                                        ),
+                                        Container(
+                                          width: Globals.width * 0.7,
+                                          height: Globals.dheight * 34,
+                                          child: Center(
+                                            child: AutoSizeText(
+                                                appModel.booking.dropoffPlace,
+                                                maxLines: 2,
+                                                minFontSize: 10,
+                                                style: TextStyle(
+                                                    fontFamily: "Lato",
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Globals.h1text
+                                                        .withAlpha(230))),
+                                          ),
+                                        )
+                                      ])
                                 ]),
-                            SizedBox(
-                              height: Globals.dheight * 10,
-                            ),
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Dropoff",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontFamily: "Lato",
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Globals.h3text),
-                                  ),
-                                  SizedBox(
-                                    height: Globals.dheight * 0.2,
-                                  ),
-                                  Text("Berkah Warung",
-                                      style: TextStyle(
-                                          fontFamily: "Lato",
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600,
-                                          color: Globals.h1text.withAlpha(230)))
-                                ])
                           ]),
                     ],
                   ),

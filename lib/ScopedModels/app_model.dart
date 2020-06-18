@@ -228,6 +228,8 @@ class AppModel extends Model {
     bookScreenModel.pickupFieldText =
         ((await AppRequests.getAddressFromLatLng(pickupPoint))['addresses'][0]
             ['address']['freeformAddress']);
+    if(bookScreenModel.pickupFieldText == ""|| bookScreenModel.pickupFieldText == null) bookScreenModel.pickupFieldText = 'Invalid location';
+    if(bookScreenModel.dropoffFieldText == ""|| bookScreenModel.dropoffFieldText == null) bookScreenModel.dropoffFieldText = 'Invalid location';
 
     booking.dropoffPlace = bookScreenModel.dropoffFieldText;
     booking.pickupPlace = bookScreenModel.pickupFieldText;

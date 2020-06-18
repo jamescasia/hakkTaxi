@@ -374,8 +374,8 @@ pathPickupMarker(LatLng pickupPoint) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
-              width: 23,
-              height: 23,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment(0, -1),
@@ -411,8 +411,8 @@ pathDropoffMarker(LatLng dropoffPoint) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
-              width: 23,
-              height: 23,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment(0, -1),

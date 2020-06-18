@@ -139,7 +139,7 @@ class _BottomPanelState extends State<BottomPanel>
                         ),
                         PolylineLayerOptions(polylines: [
                           Polyline(
-                              strokeWidth: 11,
+                              strokeWidth: 13,
                               // color: Colors.blue,
                               gradientColors: [
                                 Colors.red,

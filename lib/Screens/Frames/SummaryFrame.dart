@@ -29,7 +29,7 @@ summaryFrame(AppModel appModel, UniqueKey key) {
         ),
       ),
       Positioned.fill(
-          top: Globals.dheight * 58,
+          top: Globals.dheight * 47,
           child: Align(
             alignment: Alignment.topCenter,
             child: Column(
@@ -40,7 +40,7 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     durationCard(
-                        "${appModel.booking.tripDuration.inHours}:${appModel.booking.tripDuration.inMinutes.remainder(60)}:${(appModel.booking.tripDuration.inSeconds.remainder(60))}",
+                        "${twoDigits(appModel.booking.tripDuration.inHours)}:${twoDigits(appModel.booking.tripDuration.inMinutes.remainder(60))}:${twoDigits(appModel.booking.tripDuration.inSeconds.remainder(60))}",
                         UniqueKey()),
                     distanceCard(appModel.booking.distance.toStringAsFixed(1),
                         UniqueKey()),
@@ -73,7 +73,7 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontFamily: "Lato",
-                                          fontSize: 22,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w600,
                                           color: Globals.h3text),
                                     ),
@@ -82,17 +82,19 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                                     ),
                                     Container(
                                       width: Globals.width * 0.7,
-                                      height: Globals.dheight * 40,
-                                      child: AutoSizeText(
-                                          appModel.booking.pickupPlace,
-                                          minFontSize: 8,
-                                          overflow: TextOverflow.visible,
-                                          style: TextStyle(
-                                              fontFamily: "Lato",
-                                              // fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Globals.h1text
-                                                  .withAlpha(230))),
+                                      height: Globals.dheight * 34,
+                                      child: Center(
+                                        child: AutoSizeText(
+                                            appModel.booking.pickupPlace,
+                                            minFontSize: 10,
+                                            overflow: TextOverflow.visible,
+                                            style: TextStyle(
+                                                fontFamily: "Lato",
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w600,
+                                                color: Globals.h1text
+                                                    .withAlpha(230))),
+                                      ),
                                     )
                                   ]),
                               SizedBox(
@@ -114,14 +116,23 @@ summaryFrame(AppModel appModel, UniqueKey key) {
                                     SizedBox(
                                       height: Globals.dheight * 0.2,
                                     ),
-                                    AutoSizeText(appModel.booking.dropoffPlace,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            fontFamily: "Lato",
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                Globals.h1text.withAlpha(230)))
+                                    Container(
+                                      width: Globals.width * 0.7,
+                                      height: Globals.dheight * 34,
+                                      child: Center(
+                                        child: AutoSizeText(
+                                           
+                                            appModel.booking.dropoffPlace,
+                                            maxLines: 2,
+                                            minFontSize: 10,
+                                            style: TextStyle(
+                                                fontFamily: "Lato",
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w600,
+                                                color: Globals.h1text
+                                                    .withAlpha(230))),
+                                      ),
+                                    )
                                   ])
                             ]),
                       ),
