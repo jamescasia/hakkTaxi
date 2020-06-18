@@ -12,6 +12,7 @@ import 'package:grabApp/Screens/elements/PathWidget.dart';
 
 import 'package:grabApp/Screens/elements/DurationCard.dart';
 import 'package:grabApp/Screens/elements/DistanceCard.dart';
+import 'dart:math' as math;
 
 summaryErrorFrame(AppModel appModel) {
   return Stack(
@@ -45,7 +46,12 @@ summaryErrorFrame(AppModel appModel) {
                     predictedDurationCard(
                         "${twoDigits(appModel.booking.tripDuration.inHours)}:${appModel.booking.tripDuration.inMinutes.remainder(60)}:${twoDigits(appModel.booking.tripDuration.inSeconds.remainder(60))}",
                         UniqueKey()),
-                    errorCircle(0.412, UniqueKey()),
+                    errorCircle(
+                        math.sqrt(math.pow(
+                            appModel.booking.tripDuration.inSeconds -
+                                appModel.booking.realDuration.inSeconds,
+                            2)),
+                        UniqueKey()),
                   ],
                 ),
                 SizedBox(

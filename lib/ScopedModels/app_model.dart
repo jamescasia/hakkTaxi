@@ -125,7 +125,7 @@ class AppModel extends Model {
       var path = res['routes'][0]['legs'][0]['points'];
       dist = res['routes'][0]['legs'][0]['summary']['lengthInMeters'] / 1000.0;
 
-      print(res);
+      // print(res);
       for (dynamic p in path) {
         pathPoints.add(LatLng(p['latitude'], p['longitude']));
       }
@@ -137,7 +137,7 @@ class AppModel extends Model {
 
     booking.distance = dist;
 
-    print(pathPoints);
+    // print(pathPoints);
 
     return pathPoints;
   }
@@ -152,7 +152,7 @@ class AppModel extends Model {
       var path = res['routes'][0]['legs'][0]['points'];
       dist = res['routes'][0]['legs'][0]['summary']['lengthInMeters'] / 1000.0;
 
-      print(res);
+      // print(res);
       for (dynamic p in path) {
         pathPoints.add(LatLng(p['latitude'], p['longitude']));
       }
@@ -162,7 +162,7 @@ class AppModel extends Model {
       dist = 0.0;
     }
     booking.distance = dist;
-    print(pathPoints);
+    // print(pathPoints);
 
     return pathPoints;
   }

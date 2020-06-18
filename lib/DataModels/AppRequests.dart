@@ -4,6 +4,8 @@ import 'package:grabApp/DataModels/AuthKeys.dart';
 import 'package:grabApp/DataModels/Booking.dart';
 import 'package:latlong/latlong.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'dart:math' as math;
 
 class AppRequests {
   static getAddressFromLatLng(LatLng latlng) async {
@@ -24,6 +26,55 @@ class AppRequests {
 
   static getETA(Booking booking) async {
     await Future.delayed(Duration(milliseconds: 500));
-    return 920;
+
+    // await http
+    //     .post(
+    //         'http://8109fcb0-b370-4467-b0c2-6d0d4bc1f6c2.eastus.azurecontainer.io/score',
+    //         headers: {HttpHeaders.contentTypeHeader: "application/json"},
+    //         body: json.encode({
+    //           "data": [
+    //             {
+    //               "pickup_day": 1,
+    //               "pickup_hour": 1,
+    //               "pingtimestamp": 1,
+    //               "rawlat_dropoff": 1,
+    //               "rawlat_pickup": 1,
+    //               "rawlng_dropoff": 1,
+    //               "rawlng_pickup": 1233,
+    //             }
+    //           ]
+    //         }))
+    //     .then((response) {
+    //   print("Response status: ${response.statusCode}");
+    //   print("Response body: ${response.body}");
+    // }).catchError((err) {
+    //   print(err);
+    // });
+
+    var res = (await http.post(
+            'http://8109fcb0-b370-4467-b0c2-6d0d4bc1f6c2.eastus.azurecontainer.io/score',
+            headers: {HttpHeaders.contentTypeHeader: "application/json"},
+            body: json.encode({
+              "data": [
+                {
+                  "pickup_day": 1,
+                  "pickup_hour": 1,
+                  "pingtimestamp": 1,
+                  "rawlat_dropoff": 1,
+                  "rawlat_pickup": 1,
+                  "rawlng_dropoff": 1,
+                  "rawlng_pickup": 1233,
+                }
+              ]
+            })))
+        .body;
+    // print(((jsonDecode(res)[0])));
+
+    var a = (jsonDecode(res)[0]).toInt();
+    print('adf');
+    print(a.runtimeType);
+    print(a);
+    return a;
+    // return 920;
   }
 }

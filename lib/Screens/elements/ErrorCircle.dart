@@ -12,7 +12,7 @@ errorCircle(double error, UniqueKey key) {
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       Text(
-        "RMSE",
+        "Error",
         textAlign: TextAlign.start,
         style: TextStyle(
             fontFamily: "Lato",
