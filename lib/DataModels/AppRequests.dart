@@ -57,13 +57,14 @@ class AppRequests {
             body: json.encode({
               "data": [
                 {
-                  "pickup_day": 1,
-                  "pickup_hour": 1,
-                  "pingtimestamp": 1,
-                  "rawlat_dropoff": 1,
-                  "rawlat_pickup": 1,
-                  "rawlng_dropoff": 1,
-                  "rawlng_pickup": 1233,
+                  "pickup_day": booking.dayOfWeek,
+                  "pickup_hour": booking.hourOfDay,
+                  "pingtimestamp": booking.pingtimestamp,
+                  "rawlat_dropoff": booking.dropoffPoint.latitude,
+                  "rawlat_pickup": booking.pickupPoint.latitude
+                  ,
+                  "rawlng_dropoff": booking.dropoffPoint.longitude,
+                  "rawlng_pickup": booking.pickupPoint.longitude,
                 }
               ]
             })))

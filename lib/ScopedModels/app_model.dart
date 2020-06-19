@@ -68,14 +68,6 @@ class AppModel extends Model {
     bookScreenInitialize();
   }
 
-  // setInitialMapFocus() async {
-  //   print("Getting current Loc");
-  //   var pos = await updateCurrentLocationCoordinates();
-  //   bookScreenModel.showCurrentLatLngPickup(pos);
-  //   bookScreenModel.showCurrentPlacePickup();
-  //   mapStateSetCurrentFocus(pos);
-  // }
-
   updateCurrentLocationCoordinates() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
@@ -95,18 +87,12 @@ class AppModel extends Model {
     mapState.setCurrentFocus(latlng);
   }
 
-  // void setCurrentZoom(double z) {
-  //   mapState.currentZoom = z;
-  //   mapState.key = UniqueKey();
-  //   notifyListeners();
-  // }
-
   void bookScreenPressBookButton() async {
     if (bookScreenModel.bookingState == BookingState.NotBooked) {
       if (booking.fromSample)
         bookScreenSelectBook();
       else
-        bookScreenManualBook(booking);
+        bookScreenManualBook();
 
       notifyListeners();
     } else {
@@ -167,18 +153,21 @@ class AppModel extends Model {
     return pathPoints;
   }
 
-  void bookScreenManualBook(Booking booking) async {
+  void bookScreenManualBook() async {
     try {
       booking.tripDuration =
           Duration(seconds: await AppRequests.getETA(booking));
     } catch (e) {
       booking.tripDuration = Duration(seconds: 0);
     }
+
     if (booking.pickupPlace == "")
       booking.pickupPlace = await bookScreenModel.getPlace(booking.pickupPoint);
     if (booking.dropoffPlace == "")
       booking.dropoffPlace =
           await bookScreenModel.getPlace(booking.dropoffPoint);
+
+    booking.pingtimestamp = DateTime.now().millisecondsSinceEpoch;
     var target =
         mapState.zoomOutAndViewRoute(booking.pickupPoint, booking.dropoffPoint);
 
@@ -219,6 +208,7 @@ class AppModel extends Model {
 
     booking.dayOfWeek = dataPoint.dayOfWeek;
     booking.hourOfDay = dataPoint.hourOfDay;
+    booking.pingtimestamp = dataPoint.pingtimestamp;
     booking.realDuration = Duration(seconds: dataPoint.duration.toInt());
 
     bookScreenModel.dropoffFieldText =
@@ -228,8 +218,12 @@ class AppModel extends Model {
     bookScreenModel.pickupFieldText =
         ((await AppRequests.getAddressFromLatLng(pickupPoint))['addresses'][0]
             ['address']['freeformAddress']);
-    if(bookScreenModel.pickupFieldText == ""|| bookScreenModel.pickupFieldText == null) bookScreenModel.pickupFieldText = 'Invalid location';
-    if(bookScreenModel.dropoffFieldText == ""|| bookScreenModel.dropoffFieldText == null) bookScreenModel.dropoffFieldText = 'Invalid location';
+    if (bookScreenModel.pickupFieldText == "" ||
+        bookScreenModel.pickupFieldText == null)
+      bookScreenModel.pickupFieldText = 'Invalid location';
+    if (bookScreenModel.dropoffFieldText == "" ||
+        bookScreenModel.dropoffFieldText == null)
+      bookScreenModel.dropoffFieldText = 'Invalid location';
 
     booking.dropoffPlace = bookScreenModel.dropoffFieldText;
     booking.pickupPlace = bookScreenModel.pickupFieldText;
@@ -263,6 +257,9 @@ class AppModel extends Model {
       booking.tripDuration = Duration(seconds: 0);
     }
     setScreen(Screen.SummaryErrorScreen);
+
+    mapState.zoomOutSummaryErroScreen(
+        booking.pickupPoint, booking.dropoffPoint);
 
     // set booking  eta
     // set booking pickkupPlace, dropoffPlace
@@ -407,41 +404,12 @@ class MapState {
       animMapController.move(
           LatLng(
               0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
-          mapController.zoom - -1.6);
+          mapController.zoom - -1.04);
     } else {
       animMapController.move(
           LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
               0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
-          mapController.zoom - 1.6);
-    }
-  }
-
-  zoomOutSummaryErrorScreen(LatLng pickupPoint, LatLng dropoffPoint) {
-    if ((pickupPoint.longitude.sign != dropoffPoint.longitude.sign) &&
-        (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs() > 180)) {
-      double half =
-          (pickupPoint.longitude.abs() + dropoffPoint.longitude.abs()) / 2;
-
-      var centerLong;
-      if (pickupPoint.longitude.sign == 1.0) {
-        if (pickupPoint.longitude + half > 180) {
-          centerLong = -180 + (pickupPoint.longitude + half - 180);
-        }
-      } else {
-        if (dropoffPoint.longitude + half > 180) {
-          centerLong = -180 + (dropoffPoint.longitude + half - 180);
-        }
-      }
-
-      animMapController.move(
-          LatLng(
-              0.5 * (pickupPoint.latitude + dropoffPoint.latitude), centerLong),
-          mapController.zoom - 2);
-    } else {
-      animMapController.move(
-          LatLng(0.5 * (pickupPoint.latitude + dropoffPoint.latitude),
-              0.5 * (pickupPoint.longitude + dropoffPoint.longitude)),
-          mapController.zoom - 2);
+          mapController.zoom - 1.04);
     }
   }
 

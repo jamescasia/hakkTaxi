@@ -10,7 +10,7 @@ class Booking {
   bool fromSample = false;
   int hourOfDay;
   int dayOfWeek;
-
+  int pingtimestamp = 0;
 
   Duration realDuration = Duration(seconds: 0);
   Booking(
