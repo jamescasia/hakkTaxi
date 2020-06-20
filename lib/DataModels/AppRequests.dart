@@ -52,30 +52,23 @@ class AppRequests {
     // });
 
     var res = (await http.post(
-            'http://8109fcb0-b370-4467-b0c2-6d0d4bc1f6c2.eastus.azurecontainer.io/score',
+            'http://4f0a7c4d-8805-4057-a963-fae4639ece1d.eastus.azurecontainer.io/score',
             headers: {HttpHeaders.contentTypeHeader: "application/json"},
             body: json.encode({
               "data": [
                 {
-                  "pickup_day": booking.dayOfWeek,
-                  "pickup_hour": booking.hourOfDay,
-                  "pingtimestamp": booking.pingtimestamp,
-                  "rawlat_dropoff": booking.dropoffPoint.latitude,
-                  "rawlat_pickup": booking.pickupPoint.latitude
-                  ,
-                  "rawlng_dropoff": booking.dropoffPoint.longitude,
-                  "rawlng_pickup": booking.pickupPoint.longitude,
+                  "day_of_week": booking.dayOfWeek,
+                  "hour_of_day": booking.hourOfDay,
+                  "timestamp": booking.pingtimestamp,
+                  "latitude_destination": booking.dropoffPoint.latitude,
+                  "latitude_origin": booking.pickupPoint.latitude,
+                  "longitude_destination": booking.dropoffPoint.longitude,
+                  "longitude_origin": booking.pickupPoint.longitude,
                 }
               ]
             })))
         .body;
-    // print(((jsonDecode(res)[0])));
 
-    var a = (jsonDecode(res)[0]).toInt();
-    print('adf');
-    print(a.runtimeType);
-    print(a);
-    return a;
-    // return 920;
+    return (jsonDecode(res)[0]).toInt();
   }
 }
