@@ -83,7 +83,7 @@ pathWidget() {
       Positioned(
         top: 0,
         child: Container(
-            width: Globals.dwidth * 20,
+            width: Globals.dwidth *   20,
             height: Globals.dwidth * 20,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(300)),
