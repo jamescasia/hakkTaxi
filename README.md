@@ -6,17 +6,17 @@ HakkTaxi is a taxi-hailing app that allows the user to book a taxi and get the e
 
 ### Home Screen
 
-![1](D:\dev\hakkTaxi\screenshots&stack\resizedScreens\1.png)
+![1](./screenshots&stack/resizedScreens/1.png)
 
 ### Predict Shortest Path Screen
 
-![image-20210430110905678](C:\Users\waype\AppData\Roaming\Typora\typora-user-images\image-20210430110905678.png)
+![image-20210430110905678](./screenshots&stack/resizedScreens/selectBook.png)
 
 
 
 ### Arrival Time Screen
 
-![image-20210430110924201](C:\Users\waype\AppData\Roaming\Typora\typora-user-images\image-20210430110924201.png)
+![image-20210430110924201](./screenshots&stack/resizedScreens/3.png)
 
 ### Links 
 
